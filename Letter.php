@@ -12,7 +12,7 @@ use PHPMailer;
 use yii\base\Component;
 use yii\base\Event;
 
-class Letter extends Component
+abstract class Letter extends Component
 {
 
 	/** @var PHPMailer */
