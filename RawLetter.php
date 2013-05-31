@@ -1,7 +1,7 @@
 <?php
 /**
  * RawLetter.php
- * @author: Roman Revin <roma@quetzal.ru>
+ * @author: Roman Revin <xgismox@gmail.com>
  * @date  : 31.05.13
  */
 
