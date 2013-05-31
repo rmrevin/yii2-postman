@@ -45,7 +45,7 @@ if(!$Letter->send()){
 }
 
 // path to view algorithm:
-// 		Yii::app()->getViewPath() . Postman::$default_view_path . '/' . 'message-view' . ($is_html ? 'html' : 'raw') . '.php'
+// Yii::app()->getViewPath() . Postman::$default_view_path . '/' . 'message-view' . ($is_html ? 'html' : 'raw') . '.php'
 // path to view: /protected/views/email/message-view.html.php
 $Letter = new \yii\postman\ViewLetter('Subject', 'message-view', array('url'=>'http://...') $is_html = true);
 $Letter->add_address_list(
