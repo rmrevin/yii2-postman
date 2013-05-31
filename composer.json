@@ -1,0 +1,29 @@
+{
+    "name": "rmrevin/yii2-postman",
+    "description": "Mail module for Yii2.",
+    "keywords": ["yii", "phpmailer", "mail", "email"],
+    "type": "library",
+    "license": "BSD-3-Clause",
+    "support": {
+        "issues": "https://github.com/rmrevin/yii2-postman/issues?state=open",
+        "wiki": "https://github.com/rmrevin/yii2-postman/wiki",
+        "source": "https://github.com/rmrevin/yii2-postman"
+    },
+    "authors": [
+        {
+            "name": "Revin Roman",
+            "email": "xgismox@gmail.com",
+            "homepage": "http://rmrevin.ru/",
+            "role": "Founder and project lead"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "php": ">=5.3.7",
+        "yiisoft/yii2": "dev-master",
+        "phpmailer/phpmailer": "v5.2.6"
+    },
+    "autoload": {
+        "psr-0": { "yii\\postman\\": "/" }
+    }
+}
