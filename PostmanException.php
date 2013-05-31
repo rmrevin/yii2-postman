@@ -9,6 +9,10 @@ namespace yii\postman;
 
 use yii\base\Exception;
 
+/**
+ * Class PostmanException
+ * @package yii\postman
+ */
 class PostmanException extends Exception
 {
 

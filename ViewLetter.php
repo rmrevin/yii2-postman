@@ -10,13 +10,28 @@ namespace yii\postman;
 use Yii;
 use yii\base\Event;
 
+/**
+ * Class ViewLetter
+ * @package yii\postman
+ */
 class ViewLetter extends Letter
 {
 
+	/** @var bool */
 	private $_is_html = true;
+
+	/** @var string name of view file */
 	private $_view = null;
+
+	/** @var array params for view */
 	private $_params = array();
 
+	/**
+	 * @param string $subject subject message
+	 * @param string $view    name of view file
+	 * @param array  $params  params for view
+	 * @param bool   $is_html
+	 */
 	public function __construct($subject, $view, $params = array(), $is_html = true)
 	{
 		parent::__construct();
@@ -32,24 +47,42 @@ class ViewLetter extends Letter
 		$this->on(self::EVENT_BEFORE_SEND, array($this, 'before_send'));
 	}
 
+	/**
+	 * method sets name of view file
+	 *
+	 * @param $view
+	 * @return $this
+	 */
 	public function set_view($view)
 	{
 		$this->_view = $view;
 		return $this;
 	}
 
+	/**
+	 * method sets params for view
+	 *
+	 * @param $params
+	 * @return $this
+	 */
 	public function set_params($params)
 	{
 		$this->_params = $params;
 		return $this;
 	}
 
+	/**
+	 * method event before save
+	 *
+	 * @param Event $Event
+	 * @throws LetterException
+	 */
 	public function before_send(Event $Event)
 	{
 		$type = $this->_is_html === true ? 'html' : 'raw';
 		$type_alt = $type === 'html' ? 'raw' : 'html';
 
-		$base_view_path = Yii::$app->getViewPath() . $this->_postman->default_view_path . DIRECTORY_SEPARATOR;
+		$base_view_path = Yii::$app->getViewPath() . $this->_postman->view_path . DIRECTORY_SEPARATOR;
 
 		$path = $base_view_path . $this->_view . '.' . $type . '.php';
 		$path_alt = $base_view_path . $this->_view . '.' . $type_alt . '.php';

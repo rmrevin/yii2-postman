@@ -12,18 +12,28 @@ use PHPMailer;
 use yii\base\Component;
 use yii\base\Event;
 
+/**
+ * Class Letter
+ * abstract class that implements the basic functionality of letters;
+ *
+ * @package yii\postman
+ */
 abstract class Letter extends Component
 {
 
-	/** @var PHPMailer */
+	/** @var PHPMailer object */
 	protected $_mailer = null;
 
-	/** @var Postman */
+	/** @var Postman object */
 	protected $_postman = null;
 
+	/** @var string last error message */
 	private $_error = null;
 
+	/** name of before send email event */
 	const EVENT_BEFORE_SEND = 'on_before_send';
+
+	/** name of after send email event */
 	const EVENT_AFTER_SEND = 'on_after_send';
 
 	public function __construct()
@@ -37,6 +47,12 @@ abstract class Letter extends Component
 		$this->set_postman($Postman);
 	}
 
+	/**
+	 * method sets the object "postman"
+	 * @param Postman $Postman
+	 *
+	 * @return $this
+	 */
 	public function set_postman(Postman $Postman)
 	{
 		$this->_postman = $Postman;
@@ -45,6 +61,12 @@ abstract class Letter extends Component
 		return $this;
 	}
 
+	/**
+	 * method sets from whom we received a letter
+	 * @param array $from = array('user@somehost.com') || array('user@somehost.com', 'John Smith')
+	 *
+	 * @return $this
+	 */
 	public function set_from($from)
 	{
 		$this->_check_mailer();
@@ -54,6 +76,12 @@ abstract class Letter extends Component
 		return $this;
 	}
 
+	/**
+	 * method specifies to whom to send reply letter
+	 * @param array $reply_to = array('user@somehost.com') || array('user@somehost.com', 'John Smith')
+	 *
+	 * @return $this
+	 */
 	public function add_reply_to($reply_to)
 	{
 		$this->_check_mailer();
@@ -66,6 +94,14 @@ abstract class Letter extends Component
 		return $this;
 	}
 
+	/**
+	 * method sets several recipients
+	 * @param array $to
+	 * @param array $cc
+	 * @param array $bcc
+	 *
+	 * @return $this
+	 */
 	public function add_address_list($to = array(), $cc = array(), $bcc = array())
 	{
 		$this->_check_mailer();
@@ -88,6 +124,13 @@ abstract class Letter extends Component
 		return $this;
 	}
 
+	/**
+	 * method adds recipient
+	 * @param string $address
+	 * @param string $name
+	 *
+	 * @return $this
+	 */
 	public function add_address($address, $name = '')
 	{
 		$this->_check_mailer();
@@ -95,6 +138,13 @@ abstract class Letter extends Component
 		return $this;
 	}
 
+	/**
+	 * method adds recipient in Cc
+	 * @param string $address
+	 * @param string $name
+	 *
+	 * @return $this
+	 */
 	public function add_cc_address($address, $name = '')
 	{
 		$this->_check_mailer();
@@ -102,6 +152,13 @@ abstract class Letter extends Component
 		return $this;
 	}
 
+	/**
+	 * method adds recipient in Bcc
+	 * @param string $address
+	 * @param string $name
+	 *
+	 * @return $this
+	 */
 	public function add_bcc_address($address, $name = '')
 	{
 		$this->_check_mailer();
@@ -109,6 +166,15 @@ abstract class Letter extends Component
 		return $this;
 	}
 
+	/**
+	 * method adds attachment
+	 * @param string $path
+	 * @param string $name
+	 * @param string $encoding
+	 * @param string $type
+	 *
+	 * @return $this
+	 */
 	public function add_attachment($path, $name = '', $encoding = 'base64', $type = 'application/octet-stream')
 	{
 		$this->_check_mailer();
@@ -116,6 +182,11 @@ abstract class Letter extends Component
 		return $this;
 	}
 
+	/**
+	 * method sends a letter
+	 *
+	 * @return bool
+	 */
 	public function send()
 	{
 		$this->_check_mailer();
@@ -132,11 +203,22 @@ abstract class Letter extends Component
 		return $result;
 	}
 
+	/**
+	 * method gets the message about the last error
+	 *
+	 * @return null|string
+	 */
 	public function get_last_error()
 	{
 		return $this->_error;
 	}
 
+	/**
+	 * method checks to see if the object is "Postman"
+	 *
+	 * @return bool
+	 * @throws LetterException
+	 */
 	protected function _check_mailer()
 	{
 		if (!($this->_mailer instanceof PHPMailer)) {
@@ -146,6 +228,9 @@ abstract class Letter extends Component
 		return true;
 	}
 
+	/**
+	 * Event method before sending
+	 */
 	public function on_before_send()
 	{
 		$Event = new Event();
@@ -153,6 +238,9 @@ abstract class Letter extends Component
 		$this->trigger(self::EVENT_BEFORE_SEND, $Event);
 	}
 
+	/**
+	 * Event method after sending
+	 */
 	public function on_after_send()
 	{
 		$Event = new Event();

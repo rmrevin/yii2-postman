@@ -11,15 +11,24 @@ use Yii;
 use PHPMailer;
 use yii\base\Component;
 
+/**
+ * Class Postman
+ * main class for wrap config phpmailer
+ * @package yii\postman
+ */
 class Postman extends Component
 {
 
+	/** @var array default value to from */
 	public $default_from = array('mailer@localhost', 'Mailer');
 
-	public $default_view_path = '/email';
+	/** @var string path to views letters */
+	public $view_path = '/email';
 
+	/** @var string driver for sending mail [mail|qmail|sendmail|smtp] */
 	public $driver = 'mail';
 
+	/** @var array smtp config */
 	public $smtp_config = array(
 		'host' => 'localhost',
 		'port' => 25,
@@ -30,9 +39,12 @@ class Postman extends Component
 		'debug' => false,
 	);
 
-	/** @var PHPMailer */
-	private $_mailer_object = null;
+	/** @var PHPMailer object */
+	private $_mailer = null;
 
+	/**
+	 * method init for component
+	 */
 	public function init()
 	{
 		parent::init();
@@ -43,14 +55,19 @@ class Postman extends Component
 		$mailer->CharSet = 'utf-8';
 		$mailer->SetFrom($from[0], $from[1]);
 
-		$this->_mailer_object = $mailer;
+		$this->_mailer = $mailer;
 
 		$this->reconfigure_driver();
 	}
 
+	/**
+	 * method adjusts the selected driver to send emails
+	 * @return $this
+	 * @throws PostmanException
+	 */
 	public function reconfigure_driver()
 	{
-		$mailer = $this->_mailer_object;
+		$mailer = $this->_mailer;
 
 		switch ($this->driver) {
 			case 'mail':
@@ -79,8 +96,12 @@ class Postman extends Component
 		return $this;
 	}
 
+	/**
+	 * factory method to create clones of "Postman"
+	 * @return PHPMailer
+	 */
 	public function get_clone_mailer_object()
 	{
-		return clone $this->_mailer_object;
+		return clone $this->_mailer;
 	}
 }
