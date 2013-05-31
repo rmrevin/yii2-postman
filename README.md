@@ -1,4 +1,6 @@
-yii2-postman
+Mail Extension for Yii2
 ============
 
-Mail extension for Yii2
+Configure:
+```php
+```
