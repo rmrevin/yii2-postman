@@ -14,6 +14,7 @@ return array(
 			'class' => 'yii\postman\Postman',
 				'driver' => 'smtp',
 				'default_from' => array('track@rmrevin.ru', 'Mailer'),
+				'table' => 'tbl_letters',
 				'view_path' => '/email',
 				'smtp_config' => array(
 					'host' => 'smtp.yandex.ru',
@@ -67,9 +68,18 @@ $Letter->add_address_list(
 		array('bcc-user2@somehost.com', 'User 2 name'),
 		array('bcc-user3@somehost.com', 'User 3 name'),
 	),
+	// reply to
+	array(
+		array('abuse@somehost.com'),
+	)
 );
 
 if(!$Letter->send()){
 	echo $Letter->get_last_error();
 }
+```
+
+In cron script:
+```php
+LetterMode::cron($num_letters_per_step = 10)
 ```

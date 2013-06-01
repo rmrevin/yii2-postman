@@ -155,6 +155,22 @@ class LetterModel extends ActiveRecord
 		return true;
 	}
 
+	public static function cron($num_letters_per_step = 10)
+	{
+		/** @var \yii\postman\Postman $Postman */
+		$Postman = Yii::$app->getComponent('postman');
+		/** @var LetterModel[] $LetterModels */
+		$LetterModels = self::find()
+			->where('date_send IS NULL')
+			->orderBy('id ASC')
+			->limit($num_letters_per_step)
+			->all();
+		foreach ($LetterModels as $LetterModel) {
+			$LetterModel->set_mailer($Postman->get_clone_mailer_object());
+			$LetterModel->send_immediately();
+		}
+	}
+
 	/**
 	 * method gets the message about the last error
 	 *
