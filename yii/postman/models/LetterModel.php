@@ -18,20 +18,19 @@ use yii\postman\LetterException;
 /**
  * Class LetterModel
  * @package yii\postman\models
+ *
+ * @property integer $id         ;
+ * @property string  $date_create;
+ * @property string  $date_send  ;
+ * @property string  $from       ;
+ * @property string  $recipients ;
+ * @property string  $subject    ;
+ * @property string  $body       ;
+ * @property string  $alt_body   ;
+ * @property string  $attachments;
  */
 class LetterModel extends ActiveRecord
 {
-
-	public $id;
-	public $date_create;
-	public $date_send;
-	public $from;
-	public $reply_to;
-	public $recipients;
-	public $subject;
-	public $body;
-	public $alt_body;
-	public $attachments;
 
 	/** @var PHPMailer */
 	private $_mailer = null;
@@ -53,15 +52,13 @@ class LetterModel extends ActiveRecord
 	public function set_mailer(PHPMailer $mailer)
 	{
 		if (!$this->getIsNewRecord()) {
-			$from = Json::decode($this->from);
-			$mailer->SetFrom($from[0], isset($from[1]) ? $from[1] : '');
-
 			$mailer->Subject = $this->subject;
 			$mailer->Body = $this->body;
 			$mailer->AltBody = $this->alt_body;
 
 			$recipients = Json::decode($this->recipients);
-			foreach ($recipients['main'] as $address) {
+			$mailer->SetFrom($recipients['from'][0], isset($recipients['from'][1]) ? $recipients['from'][1] : '');
+			foreach ($recipients['to'] as $address) {
 				$address = is_string($address) ? array($address) : $address;
 				$mailer->AddAddress($address[0], isset($address[1]) ? $address[1] : '');
 			}
@@ -127,7 +124,6 @@ class LetterModel extends ActiveRecord
 			'date_create' => Yii::t('app', 'Date create'),
 			'date_send' => Yii::t('app', 'Date send'),
 			'from' => Yii::t('app', 'From'),
-			'reply_to' => Yii::t('app', 'Reply to'),
 			'recipients' => Yii::t('app', 'Recipients'),
 			'subject' => Yii::t('app', 'Subject'),
 			'body' => Yii::t('app', 'Body message'),

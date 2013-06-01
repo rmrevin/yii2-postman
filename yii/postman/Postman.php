@@ -112,12 +112,10 @@ class Postman extends Component
 					'id' => $Schema::TYPE_PK,
 					'date_create' => $Schema::TYPE_DATETIME,
 					'date_send' => $Schema::TYPE_DATETIME,
-					'from' => $Schema::TYPE_STRING,
-					'reply_to' => $Schema::TYPE_STRING,
-					'recipients' => $Schema::TYPE_STRING,
 					'subject' => $Schema::TYPE_STRING,
 					'body' => $Schema::TYPE_TEXT,
 					'alt_body' => $Schema::TYPE_TEXT,
+					'recipients' => $Schema::TYPE_TEXT,
 					'attachments' => $Schema::TYPE_TEXT,
 				),
 				'CHARACTER SET utf8 COLLATE utf8_general_ci ENGINE=InnoDB'

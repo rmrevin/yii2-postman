@@ -30,12 +30,6 @@ abstract class Letter extends Component
 	/** @var Postman object */
 	protected $_postman = null;
 
-	/** @var array from */
-	protected $from;
-
-	/** @var array reply_to */
-	protected $reply_to;
-
 	/** @var string subject */
 	protected $subject;
 
@@ -47,7 +41,8 @@ abstract class Letter extends Component
 
 	/** @var array recepients */
 	protected $recipients = array(
-		'main' => array(),
+		'from' => array(),
+		'to' => array(),
 		'cc' => array(),
 		'bcc' => array(),
 		'reply' => array(),
@@ -88,7 +83,7 @@ abstract class Letter extends Component
 	public function set_postman(Postman $Postman)
 	{
 		$this->_postman = $Postman;
-		$this->from = $Postman->default_from;
+		$this->set_from($Postman->default_from);
 
 		return $this;
 	}
@@ -101,7 +96,7 @@ abstract class Letter extends Component
 	 */
 	public function set_from($from)
 	{
-		$this->from = $from;
+		$this->recipients['from'] = $from;
 
 		return $this;
 	}
@@ -141,7 +136,7 @@ abstract class Letter extends Component
 	 */
 	public function add_address($address)
 	{
-		return $this->_add_addr('main', $address);
+		return $this->_add_addr('to', $address);
 	}
 
 	/**
@@ -226,8 +221,7 @@ abstract class Letter extends Component
 
 		$LetterModel = $this->_data_to_model();
 		$LetterModel->date_create = new Expression('NOW()');
-		dump($LetterModel);
-		$result = $LetterModel->insert(true, array('from'));
+		$result = $LetterModel->save();
 
 		if ($immediately === true) {
 			$LetterModel
@@ -258,8 +252,6 @@ abstract class Letter extends Component
 	private function _data_to_model()
 	{
 		$LetterModel = new LetterModel();
-		$LetterModel->from = Json::encode($this->from);
-		$LetterModel->reply_to = Json::encode($this->reply_to);
 		$LetterModel->recipients = Json::encode($this->recipients);
 		$LetterModel->subject = $this->subject;
 		$LetterModel->body = $this->body;
