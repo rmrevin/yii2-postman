@@ -1,8 +1,8 @@
 Mail Extension for Yii2
 ============
 
-Configure
----------
+Configuration
+-------------
 `/protected/config/main.php`
 ```php
 <?
