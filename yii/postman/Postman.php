@@ -13,22 +13,22 @@ use yii\base\Component;
 
 /**
  * Class Postman
- * main class for wrap config phpmailer
+ * The main class to wrap a config of PHPMailer
  * @package yii\postman
  */
 class Postman extends Component
 {
 
-	/** @var array default value to from */
+	/** @var array the default value for the "From" field */
 	public $default_from = array('mailer@localhost', 'Mailer');
 
-	/** @var string db table name for letters */
+	/** @var string a name of the db table for letters */
 	public $table = '{{%letter}}';
 
-	/** @var string path to views letters */
+	/** @var string a path to views of letters */
 	public $view_path = '/email';
 
-	/** @var string driver for sending mail [mail|qmail|sendmail|smtp] */
+	/** @var string a driver for sending mail [mail|qmail|sendmail|smtp] */
 	public $driver = 'mail';
 
 	/** @var array smtp config */
@@ -46,7 +46,7 @@ class Postman extends Component
 	private $_mailer = null;
 
 	/**
-	 * method init for component
+	 * The init method for the component
 	 */
 	public function init()
 	{
@@ -65,7 +65,7 @@ class Postman extends Component
 	}
 
 	/**
-	 * method adjusts the selected driver to send emails
+	 * the method adjusts the selected driver to send emails
 	 * @return $this
 	 * @throws PostmanException
 	 */
