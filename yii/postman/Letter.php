@@ -46,7 +46,12 @@ abstract class Letter extends Component
 	protected $alt_body;
 
 	/** @var array recepients */
-	protected $recipients;
+	protected $recipients = array(
+		'main' => array(),
+		'cc' => array(),
+		'bcc' => array(),
+		'reply' => array(),
+	);
 
 	/** @var array attachments */
 	protected $attachments;
@@ -112,12 +117,18 @@ abstract class Letter extends Component
 	 */
 	public function add_address_list($to = array(), $cc = array(), $bcc = array(), $reply_to = array())
 	{
-		$this
-			->add_address($to)
-			->add_cc_address($cc);
-		$this
-			->add_bcc_address($bcc)
-			->add_reply_to($reply_to);
+		foreach ($to as $address) {
+			$this->add_address($address);
+		}
+		foreach ($cc as $address) {
+			$this->add_cc_address($address);
+		}
+		foreach ($bcc as $address) {
+			$this->add_bcc_address($address);
+		}
+		foreach ($reply_to as $address) {
+			$this->add_reply_to($address);
+		}
 
 		return $this;
 	}
@@ -215,7 +226,8 @@ abstract class Letter extends Component
 
 		$LetterModel = $this->_data_to_model();
 		$LetterModel->date_create = new Expression('NOW()');
-		$result = $LetterModel->save();
+		dump($LetterModel);
+		$result = $LetterModel->insert(true, array('from'));
 
 		if ($immediately === true) {
 			$LetterModel

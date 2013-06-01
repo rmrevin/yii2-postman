@@ -11,9 +11,14 @@ use Yii;
 use PHPMailer;
 use yii\base\Event;
 use yii\db\ActiveRecord;
+use yii\db\Expression;
 use yii\helpers\Json;
 use yii\postman\LetterException;
 
+/**
+ * Class LetterModel
+ * @package yii\postman\models
+ */
 class LetterModel extends ActiveRecord
 {
 
@@ -74,13 +79,15 @@ class LetterModel extends ActiveRecord
 			}
 
 			$attachments = Json::decode($this->attachments);
-			foreach ($attachments as $attachment) {
-				$mailer->AddAttachment(
-					$attachment['path'],
-					$attachment['name'],
-					$attachment['encoding'],
-					$attachment['type']
-				);
+			if (is_array($attachments)) {
+				foreach ($attachments as $attachment) {
+					$mailer->AddAttachment(
+						$attachment['path'],
+						$attachment['name'],
+						$attachment['encoding'],
+						$attachment['type']
+					);
+				}
 			}
 		}
 
@@ -103,7 +110,7 @@ class LetterModel extends ActiveRecord
 		$result = $this->_mailer->Send();
 		if ($result === false) {
 			$this->_error = $this->_mailer->ErrorInfo;
-		}else{
+		} else {
 			$this->date_send = new Expression('NOW()');
 			$this->update(false, array('date_send'));
 		}
@@ -126,7 +133,6 @@ class LetterModel extends ActiveRecord
 			'body' => Yii::t('app', 'Body message'),
 			'alt_body' => Yii::t('app', 'Alternative body message'),
 			'attachments' => Yii::t('app', 'Attachments'),
-
 		);
 	}
 
@@ -159,6 +165,7 @@ class LetterModel extends ActiveRecord
 	{
 		return $this->_error;
 	}
+
 	/**
 	 * Event method before sending
 	 */
