@@ -97,7 +97,6 @@ abstract class Letter extends Component
 	public function set_from($from)
 	{
 		$this->recipients['from'] = $from;
-		$this->add_reply_to($from);
 
 		return $this;
 	}
