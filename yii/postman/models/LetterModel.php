@@ -131,6 +131,7 @@ class LetterModel extends ActiveRecord
 			'body' => Yii::t('app', 'Body message'),
 			'alt_body' => Yii::t('app', 'Alternative body message'),
 			'attachments' => Yii::t('app', 'Attachments'),
+			'is_html' => Yii::t('app', 'Is HTML'),
 		);
 	}
 
