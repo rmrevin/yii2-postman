@@ -22,6 +22,9 @@ class Postman extends Component
 	/** @var array default value to from */
 	public $default_from = array('mailer@localhost', 'Mailer');
 
+	/** @var string db table name for letters */
+	public $table = '{{%letter}}';
+
 	/** @var string path to views letters */
 	public $view_path = '/email';
 
@@ -58,6 +61,7 @@ class Postman extends Component
 		$this->_mailer = $mailer;
 
 		$this->reconfigure_driver();
+		$this->reconfigure_table();
 	}
 
 	/**
@@ -94,6 +98,31 @@ class Postman extends Component
 		}
 
 		return $this;
+	}
+
+	public function reconfigure_table()
+	{
+		$data = Yii::$app->getDb()->getTableSchema($this->table);
+		if ($data === null) {
+			$Schema = Yii::$app->getDb()->getSchema();
+
+			Yii::$app->getDb()->createCommand()->createTable(
+				$this->table,
+				array(
+					'id' => $Schema::TYPE_PK,
+					'date_create' => $Schema::TYPE_DATETIME,
+					'date_send' => $Schema::TYPE_DATETIME,
+					'from' => $Schema::TYPE_STRING,
+					'reply_to' => $Schema::TYPE_STRING,
+					'recipients' => $Schema::TYPE_STRING,
+					'subject' => $Schema::TYPE_STRING,
+					'body' => $Schema::TYPE_TEXT,
+					'alt_body' => $Schema::TYPE_TEXT,
+					'attachments' => $Schema::TYPE_TEXT,
+				),
+				'CHARACTER SET utf8 COLLATE utf8_general_ci ENGINE=InnoDB'
+			)->execute();
+		}
 	}
 
 	/**

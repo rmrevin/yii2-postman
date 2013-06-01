@@ -35,11 +35,9 @@ class RawLetter extends Letter
 	 */
 	public function set_data($subject, $body, $alt_body = null, $is_html = true)
 	{
-		$this->_check_mailer();
-
-		$this->_mailer->Subject = $subject;
-		$this->_mailer->Body = $body;
-		$this->_mailer->AltBody = $alt_body;
-		$this->_mailer->IsHTML($is_html);
+		$this->subject = $subject;
+		$this->body = $body;
+		$this->alt_body = $alt_body;
+		$this->is_html = $is_html;
 	}
 }

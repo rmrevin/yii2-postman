@@ -11,6 +11,9 @@ use Yii;
 use PHPMailer;
 use yii\base\Component;
 use yii\base\Event;
+use yii\db\Expression;
+use yii\helpers\Json;
+use yii\postman\models\LetterModel;
 
 /**
  * Class Letter
@@ -26,6 +29,30 @@ abstract class Letter extends Component
 
 	/** @var Postman object */
 	protected $_postman = null;
+
+	/** @var array from */
+	protected $from;
+
+	/** @var array reply_to */
+	protected $reply_to;
+
+	/** @var string subject */
+	protected $subject;
+
+	/** @var string body message */
+	protected $body;
+
+	/** @var string alternative body message */
+	protected $alt_body;
+
+	/** @var array recepients */
+	protected $recipients;
+
+	/** @var array attachments */
+	protected $attachments;
+
+	/** @var bool is_html */
+	protected $is_html = true;
 
 	/** @var string last error message */
 	private $_error = null;
@@ -56,7 +83,7 @@ abstract class Letter extends Component
 	public function set_postman(Postman $Postman)
 	{
 		$this->_postman = $Postman;
-		$this->_mailer = $Postman->get_clone_mailer_object();
+		$this->from = $Postman->default_from;
 
 		return $this;
 	}
@@ -69,27 +96,7 @@ abstract class Letter extends Component
 	 */
 	public function set_from($from)
 	{
-		$this->_check_mailer();
-
-		$this->_mailer->SetFrom($from[0], $from[1]);
-
-		return $this;
-	}
-
-	/**
-	 * method specifies to whom to send reply letter
-	 * @param array $reply_to = array('user@somehost.com') || array('user@somehost.com', 'John Smith')
-	 *
-	 * @return $this
-	 */
-	public function add_reply_to($reply_to)
-	{
-		$this->_check_mailer();
-
-		foreach ($reply_to as $address) {
-			$address = is_string($address) ? array($address) : $address;
-			$this->_mailer->AddAddress($address[0], isset($address[1]) ? $address[1] : '');
-		}
+		$this->from = $from;
 
 		return $this;
 	}
@@ -99,70 +106,80 @@ abstract class Letter extends Component
 	 * @param array $to
 	 * @param array $cc
 	 * @param array $bcc
+	 * @param array $reply_to
 	 *
 	 * @return $this
 	 */
-	public function add_address_list($to = array(), $cc = array(), $bcc = array())
+	public function add_address_list($to = array(), $cc = array(), $bcc = array(), $reply_to = array())
 	{
-		$this->_check_mailer();
-
-		foreach ($to as $address) {
-			$address = is_string($address) ? array($address) : $address;
-			$this->add_address($address[0], isset($address[1]) ? $address[1] : '');
-		}
-
-		foreach ($cc as $address) {
-			$address = is_string($address) ? array($address) : $address;
-			$this->add_cc_address($address[0], isset($address[1]) ? $address[1] : '');
-		}
-
-		foreach ($bcc as $address) {
-			$address = is_string($address) ? array($address) : $address;
-			$this->add_bcc_address($address[0], isset($address[1]) ? $address[1] : '');
-		}
+		$this
+			->add_address($to)
+			->add_cc_address($cc);
+		$this
+			->add_bcc_address($bcc)
+			->add_reply_to($reply_to);
 
 		return $this;
 	}
 
 	/**
 	 * method adds recipient
-	 * @param string $address
-	 * @param string $name
+	 * @param array $address
 	 *
 	 * @return $this
 	 */
-	public function add_address($address, $name = '')
+	public function add_address($address)
 	{
-		$this->_check_mailer();
-		$this->_mailer->AddAddress($address, $name);
-		return $this;
+		return $this->_add_addr('main', $address);
 	}
 
 	/**
 	 * method adds recipient in Cc
-	 * @param string $address
-	 * @param string $name
+	 * @param array $address
 	 *
 	 * @return $this
 	 */
-	public function add_cc_address($address, $name = '')
+	public function add_cc_address($address)
 	{
-		$this->_check_mailer();
-		$this->_mailer->AddCC($address, $name);
-		return $this;
+		return $this->_add_addr('cc', $address);
 	}
 
 	/**
 	 * method adds recipient in Bcc
-	 * @param string $address
-	 * @param string $name
+	 * @param array $address
 	 *
 	 * @return $this
 	 */
-	public function add_bcc_address($address, $name = '')
+	public function add_bcc_address($address)
 	{
-		$this->_check_mailer();
-		$this->_mailer->AddBCC($address, $name);
+		return $this->_add_addr('bcc', $address);
+	}
+
+	/**
+	 * method specifies to whom to send reply letter
+	 * @param array $address = array('user@somehost.com') || array('user@somehost.com', 'John Smith')
+	 *
+	 * @return $this
+	 */
+	public function add_reply_to($address)
+	{
+		return $this->_add_addr('reply', $address);
+	}
+
+	/**
+	 * method adds recipient by type
+	 * @param $type
+	 * @param $address
+	 *
+	 * @return $this
+	 */
+	private function _add_addr($type, $address)
+	{
+		$address = !is_array($address) ? array($address) : $address;
+		if (!isset($this->recipients[$type])) {
+			$this->recipients[$type] = array();
+		}
+		$this->recipients[$type][] = $address;
 		return $this;
 	}
 
@@ -177,25 +194,33 @@ abstract class Letter extends Component
 	 */
 	public function add_attachment($path, $name = '', $encoding = 'base64', $type = 'application/octet-stream')
 	{
-		$this->_check_mailer();
-		$this->_mailer->AddAttachment($path, $name, $encoding, $type);
+		$this->attachments[] = array(
+			'path' => $path,
+			'name' => $name,
+			'encoding' => $encoding,
+			'type' => $type
+		);
 		return $this;
 	}
 
 	/**
 	 * method sends a letter
+	 * @param bool $immediately
 	 *
 	 * @return bool
 	 */
-	public function send()
+	public function send($immediately = false)
 	{
-		$this->_check_mailer();
-
 		$this->on_before_send();
 
-		$result = $this->_mailer->Send();
-		if ($result === false) {
-			$this->_error = $this->_mailer->ErrorInfo;
+		$LetterModel = $this->_data_to_model();
+		$LetterModel->date_create = new Expression('NOW()');
+		$result = $LetterModel->save();
+
+		if ($immediately === true) {
+			$LetterModel
+				->set_mailer($this->_postman->get_clone_mailer_object())
+				->send_immediately();
 		}
 
 		$this->on_after_send();
@@ -214,18 +239,22 @@ abstract class Letter extends Component
 	}
 
 	/**
-	 * method checks to see if the object is "Postman"
+	 * method convert letter data to letter model
 	 *
-	 * @return bool
-	 * @throws LetterException
+	 * @return LetterModel
 	 */
-	protected function _check_mailer()
+	private function _data_to_model()
 	{
-		if (!($this->_mailer instanceof PHPMailer)) {
-			throw new LetterException(Yii::t('app', 'First we need to call method "set_postman".'));
-		}
+		$LetterModel = new LetterModel();
+		$LetterModel->from = Json::encode($this->from);
+		$LetterModel->reply_to = Json::encode($this->reply_to);
+		$LetterModel->recipients = Json::encode($this->recipients);
+		$LetterModel->subject = $this->subject;
+		$LetterModel->body = $this->body;
+		$LetterModel->alt_body = $this->alt_body;
+		$LetterModel->attachments = Json::encode($this->attachments);
 
-		return true;
+		return $LetterModel;
 	}
 
 	/**

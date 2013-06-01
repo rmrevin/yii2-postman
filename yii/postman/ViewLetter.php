@@ -17,9 +17,6 @@ use yii\base\Event;
 class ViewLetter extends Letter
 {
 
-	/** @var bool */
-	private $_is_html = true;
-
 	/** @var string name of view file */
 	private $_view = null;
 
@@ -36,11 +33,8 @@ class ViewLetter extends Letter
 	{
 		parent::__construct();
 
-		$this->_check_mailer();
-		$this->_mailer->Subject = $subject;
-
-		$this->_is_html = $is_html;
-		$this->_mailer->IsHTML($is_html);
+		$this->subject = $subject;
+		$this->is_html = $is_html;
 
 		$this->set_view($view)->set_params($params);
 
@@ -79,7 +73,7 @@ class ViewLetter extends Letter
 	 */
 	public function before_send(Event $Event)
 	{
-		$type = $this->_is_html === true ? 'html' : 'raw';
+		$type = $this->is_html === true ? 'html' : 'raw';
 		$type_alt = $type === 'html' ? 'raw' : 'html';
 
 		$base_view_path = Yii::$app->getViewPath() . $this->_postman->view_path . DIRECTORY_SEPARATOR;
@@ -88,13 +82,13 @@ class ViewLetter extends Letter
 		$path_alt = $base_view_path . $this->_view . '.' . $type_alt . '.php';
 
 		if (!file_exists($path)) {
-			throw new LetterException(Yii::t('app', 'View file "{path}" not found.', array('{path}' => $path)));
+			throw new LetterException(Yii::t('app', 'View file «{path}» not found.', array('{path}' => $path)));
 		} else {
-			$this->_mailer->Body = Yii::$app->getView()->renderFile($path, $this->_params);
+			$this->body = Yii::$app->getView()->renderFile($path, $this->_params);
 		}
 
 		if (file_exists($path_alt)) {
-			$this->_mailer->AltBody = Yii::$app->getView()->renderFile($path_alt, $this->_params);
+			$this->alt_body = Yii::$app->getView()->renderFile($path_alt, $this->_params);
 		}
 	}
 }
