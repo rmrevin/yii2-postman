@@ -36,7 +36,7 @@ Usage
 ```php
 <?
 // ...
-$Letter = new \yii\postman\RawLetter('Subject', 'Body message', 'Alternative body message', $is_html = true);
+$Letter = new \yii\postman\RawLetter('Subject', 'Body message', 'Alternative body message');
 $Letter
 	->add_address('user@somehost.com', 'User name')
 	->add_cc_address('user2@somehost.com', 'CC user name')
@@ -46,9 +46,9 @@ if(!$Letter->send()){
 }
 
 // path to view algorithm:
-// Yii::app()->getViewPath() . Postman::$default_view_path . '/' . 'message-view' . ($is_html ? 'html' : 'raw') . '.php'
-// path to view: /protected/views/email/message-view.html.php
-$Letter = new \yii\postman\ViewLetter('Subject', 'message-view', array('url'=>'http://...') $is_html = true);
+// Yii::app()->getViewPath() . Postman::$default_view_path . '/' . 'message-view.php'
+// path to view: /protected/views/email/message-view.php
+$Letter = new \yii\postman\ViewLetter('Subject', 'message-view', array('url'=>'http://...'));
 $Letter->add_address_list(
 	// recipients
 	array(
