@@ -19,8 +19,7 @@
     ],
     "minimum-stability": "dev",
     "require": {
-        "php": ">=5.3.7",
-        "yiisoft/yii2": "dev-master",
+        "yiisoft/yii2": "*",
         "phpmailer/phpmailer": "v5.2.6"
     },
     "autoload": {
