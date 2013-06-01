@@ -17,7 +17,7 @@ use yii\postman\models\LetterModel;
 
 /**
  * Class Letter
- * abstract class that implements the basic functionality of letters;
+ * The abstract class that implements the basic functionality of letters;
  *
  * @package yii\postman
  */
@@ -30,16 +30,16 @@ abstract class Letter extends Component
 	/** @var Postman object */
 	protected $_postman = null;
 
-	/** @var string subject */
+	/** @var string a subject */
 	protected $subject;
 
-	/** @var string body message */
+	/** @var string a body of a message */
 	protected $body;
 
-	/** @var string alternative body message */
+	/** @var string an alternative body of a message */
 	protected $alt_body;
 
-	/** @var array recepients */
+	/** @var array recipients */
 	protected $recipients = array(
 		'from' => array(),
 		'to' => array(),
@@ -54,13 +54,13 @@ abstract class Letter extends Component
 	/** @var bool is_html */
 	protected $is_html = true;
 
-	/** @var string last error message */
+	/** @var string a last error of a message */
 	private $_error = null;
 
-	/** name of before send email event */
+	/** the name of the event that occurs before sending emails*/
 	const EVENT_BEFORE_SEND = 'on_before_send';
 
-	/** name of after send email event */
+	/** the name of the event that occurs after sending emails */
 	const EVENT_AFTER_SEND = 'on_after_send';
 
 	public function __construct()
@@ -75,7 +75,7 @@ abstract class Letter extends Component
 	}
 
 	/**
-	 * method sets the object "postman"
+	 * the method sets the "postman" object
 	 * @param Postman $Postman
 	 *
 	 * @return $this
@@ -89,7 +89,7 @@ abstract class Letter extends Component
 	}
 
 	/**
-	 * method sets from whom we received a letter
+	 * the method sets the value of the "From" field
 	 * @param array $from = array('user@somehost.com') || array('user@somehost.com', 'John Smith')
 	 *
 	 * @return $this
@@ -102,7 +102,7 @@ abstract class Letter extends Component
 	}
 
 	/**
-	 * method sets several recipients
+	 * the method sets several recipients
 	 * @param array $to
 	 * @param array $cc
 	 * @param array $bcc
@@ -129,7 +129,7 @@ abstract class Letter extends Component
 	}
 
 	/**
-	 * method adds recipient
+	 * the method adds a recipient
 	 * @param array $address
 	 *
 	 * @return $this
@@ -140,7 +140,7 @@ abstract class Letter extends Component
 	}
 
 	/**
-	 * method adds recipient in Cc
+	 * the method adds a recipient to Cc
 	 * @param array $address
 	 *
 	 * @return $this
@@ -151,7 +151,7 @@ abstract class Letter extends Component
 	}
 
 	/**
-	 * method adds recipient in Bcc
+	 * the method adds a recipient to Bcc
 	 * @param array $address
 	 *
 	 * @return $this
@@ -162,7 +162,7 @@ abstract class Letter extends Component
 	}
 
 	/**
-	 * method specifies to whom to send reply letter
+	 * the method adds a "Reply-to" address
 	 * @param array $address = array('user@somehost.com') || array('user@somehost.com', 'John Smith')
 	 *
 	 * @return $this
@@ -173,7 +173,7 @@ abstract class Letter extends Component
 	}
 
 	/**
-	 * method adds recipient by type
+	 * the method adds a recipient by type
 	 * @param $type
 	 * @param $address
 	 *
@@ -190,7 +190,7 @@ abstract class Letter extends Component
 	}
 
 	/**
-	 * method adds attachment
+	 * the method adds an attachment
 	 * @param string $path
 	 * @param string $name
 	 * @param string $encoding
@@ -210,7 +210,7 @@ abstract class Letter extends Component
 	}
 
 	/**
-	 * method sends a letter
+	 * the method sends a letter
 	 * @param bool $immediately
 	 *
 	 * @return bool
@@ -235,7 +235,7 @@ abstract class Letter extends Component
 	}
 
 	/**
-	 * method gets the message about the last error
+	 * the method gets the message about the last error
 	 *
 	 * @return null|string
 	 */
@@ -245,7 +245,7 @@ abstract class Letter extends Component
 	}
 
 	/**
-	 * method convert letter data to letter model
+	 * the method converts the letter data to the letter model
 	 *
 	 * @return LetterModel
 	 */
@@ -263,7 +263,7 @@ abstract class Letter extends Component
 	}
 
 	/**
-	 * Event method before sending
+	 * the "before send" event method
 	 */
 	public function on_before_send()
 	{
@@ -273,7 +273,7 @@ abstract class Letter extends Component
 	}
 
 	/**
-	 * Event method after sending
+	 * the "after send" event method
 	 */
 	public function on_after_send()
 	{

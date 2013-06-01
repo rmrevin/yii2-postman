@@ -24,9 +24,9 @@ class ViewLetter extends Letter
 	private $_params = array();
 
 	/**
-	 * @param string $subject subject message
-	 * @param string $view    name of view file
-	 * @param array  $params  params for view
+	 * @param string $subject a subject of a message
+	 * @param string $view    a name of a view file
+	 * @param array  $params  params for a view
 	 * @param bool   $is_html
 	 */
 	public function __construct($subject, $view, $params = array(), $is_html = true)
@@ -42,7 +42,7 @@ class ViewLetter extends Letter
 	}
 
 	/**
-	 * method sets name of view file
+	 * the method sets a name of a view file
 	 *
 	 * @param $view
 	 * @return $this
@@ -54,7 +54,7 @@ class ViewLetter extends Letter
 	}
 
 	/**
-	 * method sets params for view
+	 * the method sets params for a view
 	 *
 	 * @param $params
 	 * @return $this
@@ -66,7 +66,7 @@ class ViewLetter extends Letter
 	}
 
 	/**
-	 * method event before save
+	 * BeforeSend event method
 	 *
 	 * @param Event $Event
 	 * @throws LetterException
