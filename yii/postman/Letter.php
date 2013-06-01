@@ -51,9 +51,6 @@ abstract class Letter extends Component
 	/** @var array attachments */
 	protected $attachments;
 
-	/** @var bool is_html */
-	protected $is_html = true;
-
 	/** @var string a last error of a message */
 	private $_error = null;
 
@@ -257,7 +254,6 @@ abstract class Letter extends Component
 		$LetterModel->body = $this->body;
 		$LetterModel->alt_body = $this->alt_body;
 		$LetterModel->attachments = Json::encode($this->attachments);
-		$LetterModel->is_html = $this->is_html === true ? 1 : 0;
 
 		return $LetterModel;
 	}
