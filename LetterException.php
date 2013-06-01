@@ -7,13 +7,13 @@
 
 namespace yii\postman;
 
-use yii\base\Exception;
+use yii\base\ErrorException;
 
 /**
  * Class LetterException
  * @package yii\postman
  */
-class LetterException extends Exception
+class LetterException extends ErrorException
 {
 
 }

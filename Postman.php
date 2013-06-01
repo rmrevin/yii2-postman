@@ -58,6 +58,7 @@ class Postman extends Component
 		$this->_mailer = $mailer;
 
 		$this->reconfigure_driver();
+		$this->reconfigure_table();
 	}
 
 	/**
