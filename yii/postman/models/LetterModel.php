@@ -36,13 +36,13 @@ class LetterModel extends ActiveRecord
 	/** @var PHPMailer */
 	private $_mailer = null;
 
-	/** @var string last error message */
+	/** @var string a last error message */
 	private $_error = null;
 
-	/** name of before send email event */
+	/** the name of the event that occurs before sending emails */
 	const EVENT_BEFORE_SEND = 'on_before_send';
 
-	/** name of after send email event */
+	/** the name of the event that occurs after sending emails */
 	const EVENT_AFTER_SEND = 'on_after_send';
 
 	public function rules()
@@ -96,7 +96,7 @@ class LetterModel extends ActiveRecord
 	}
 
 	/**
-	 * method sends a letter
+	 * the method sends a letter
 	 *
 	 * @return bool
 	 */
@@ -141,7 +141,7 @@ class LetterModel extends ActiveRecord
 	}
 
 	/**
-	 * method checks to see if the object is "PHPMailer"
+	 * the method checks if the object is "PHPMailer"
 	 *
 	 * @return bool
 	 * @throws LetterException
@@ -172,7 +172,7 @@ class LetterModel extends ActiveRecord
 	}
 
 	/**
-	 * method gets the message about the last error
+	 * the method gets the message about the last error
 	 *
 	 * @return null|string
 	 */
@@ -182,7 +182,7 @@ class LetterModel extends ActiveRecord
 	}
 
 	/**
-	 * Event method before sending
+	 * the "before send" event method
 	 */
 	public function on_before_send()
 	{
@@ -192,7 +192,7 @@ class LetterModel extends ActiveRecord
 	}
 
 	/**
-	 * Event method after sending
+	 * the "after send" event method
 	 */
 	public function on_after_send()
 	{
