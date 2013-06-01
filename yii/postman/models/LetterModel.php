@@ -28,6 +28,7 @@ use yii\postman\LetterException;
  * @property string  $body       ;
  * @property string  $alt_body   ;
  * @property string  $attachments;
+ * @property boolean $is_html
  */
 class LetterModel extends ActiveRecord
 {
@@ -55,6 +56,7 @@ class LetterModel extends ActiveRecord
 			$mailer->Subject = $this->subject;
 			$mailer->Body = $this->body;
 			$mailer->AltBody = $this->alt_body;
+			$mailer->IsHTML($this->is_html);
 
 			$recipients = Json::decode($this->recipients);
 			$mailer->SetFrom($recipients['from'][0], isset($recipients['from'][1]) ? $recipients['from'][1] : '');

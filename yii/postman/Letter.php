@@ -257,6 +257,7 @@ abstract class Letter extends Component
 		$LetterModel->body = $this->body;
 		$LetterModel->alt_body = $this->alt_body;
 		$LetterModel->attachments = Json::encode($this->attachments);
+		$LetterModel->is_html = Json::encode($this->is_html);
 
 		return $LetterModel;
 	}
