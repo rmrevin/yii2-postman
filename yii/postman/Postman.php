@@ -73,8 +73,6 @@ class Postman extends Component
 	{
 		$mailer = $this->_mailer;
 
-		$mailer->IsHTML(true);
-
 		switch ($this->driver) {
 			case 'mail':
 				$mailer->IsMail();
