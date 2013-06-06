@@ -168,6 +168,10 @@ class LetterModel extends ActiveRecord
 		foreach ($LetterModels as $LetterModel) {
 			$LetterModel->set_mailer($Postman->get_clone_mailer_object());
 			$LetterModel->send_immediately();
+			$err = $LetterModel->get_last_error();
+			if (!empty($err)) {
+				echo $err . "\n";
+			}
 		}
 	}
 
