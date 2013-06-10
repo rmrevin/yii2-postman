@@ -16,65 +16,61 @@ class TestListener implements \PHPUnit_Framework_TestListener
 
 	public function addError(\PHPUnit_Framework_Test $test, \Exception $e, $time)
 	{
-		echo "\t[";
-		echo $this->colorize("error", "red");
-		echo "]-";
+		$text = $this->colorize("error", "red");
+		echo "\t[{$text}]-";
 	}
 
 	public function addFailure(\PHPUnit_Framework_Test $test, \PHPUnit_Framework_AssertionFailedError $e, $time)
 	{
-		echo "\t[";
-		echo $this->colorize("failed", "red");
-		echo "]-";
+		$text = $this->colorize("failed", "red");
+		echo "\t[{$text}]-";
 	}
 
 	public function addIncompleteTest(\PHPUnit_Framework_Test $test, \Exception $e, $time)
 	{
-		echo "\t\t[";
-		echo $this->colorize("incomplete");
-		echo "]-";
+		$text = $this->colorize("incomplete");
+		echo "\t\t[{$text}]-";
 	}
 
 	public function addSkippedTest(\PHPUnit_Framework_Test $test, \Exception $e, $time)
 	{
-		echo "\t[";
-		echo $this->colorize("skipped");
-		echo "]-";
+		$text = $this->colorize("skipped");
+		echo "\t[{$text}]-";
 	}
 
 	public function startTest(\PHPUnit_Framework_Test $test)
 	{
 		$this->timeTest = microtime(1);
 		$method = $this->colorize($test->getName(), 'green');
-
-		echo "\n\t-> " . $method;
+		echo "\n\t-> {$method}";
 	}
 
 	public function endTest(\PHPUnit_Framework_Test $test, $time)
 	{
 		$time = sprintf('%0.3f sec', microtime(1) - $this->timeTest);
+		$count = $test->getCount();
+		$tabs = ceil((29 - strlen($test->getName())) / 8);
 
-		echo "\t\t" . $test->getCount() . '(Assertions)';
-		echo $this->colorize("\t" . $time, 'green');
+		echo str_repeat("\t", $tabs) . "{$count} Assertions";
+		echo $this->colorize("\t{$time}", 'green');
 	}
 
 	public function startTestSuite(\PHPUnit_Framework_TestSuite $suite)
 	{
 		$this->timeSuite = microtime(1);
-		echo "\n\n" . $this->colorize($suite->getName(), 'blue');
+		$text = $this->colorize($suite->getName(), 'blue');
+		echo "\n\n{$text}";
 	}
 
 	public function endTestSuite(\PHPUnit_Framework_TestSuite $suite)
 	{
 		$time = sprintf('%0.3f sec', microtime(1) - $this->timeSuite);
 
-		echo $this->colorize("\nTime: " . $time, 'green');
+		echo $this->colorize("\n\tTime: {$time}", 'green');
 	}
 
 	private function colorize($text, $color = 'yellow')
 	{
-		return $text;
-
 		switch ($color) {
 			case 'red':
 				$color = "1;31";
@@ -92,6 +88,6 @@ class TestListener implements \PHPUnit_Framework_TestListener
 				$color = "1;33";
 				break;
 		}
-		return "\033[" . $color . 'm' . $text . "\033[0m";
+		return "\033[{$color}m{$text}\033[0m";
 	}
 }
