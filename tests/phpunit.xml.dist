@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<phpunit bootstrap="./unit/bootstrap.php"
+         colors="true"
+         convertErrorsToExceptions="true"
+         convertNoticesToExceptions="true"
+         convertWarningsToExceptions="true"
+         stopOnFailure="false">
+    <listeners>
+        <listener class="\postmantest\TestListener" file="./unit/TestListener.php"/>
+    </listeners>
+    <testsuites>
+        <testsuite name="Test Suite">
+            <directory>./unit/postman</directory>
+        </testsuite>
+    </testsuites>
+</phpunit>

@@ -26,7 +26,6 @@ use yii\postman\LetterException;
  * @property string  $recipients ;
  * @property string  $subject    ;
  * @property string  $body       ;
- * @property string  $alt_body   ;
  * @property string  $attachments;
  * @property boolean $is_html
  */
@@ -45,9 +44,24 @@ class LetterModel extends ActiveRecord
 	/** the name of the event that occurs after sending emails */
 	const EVENT_AFTER_SEND = 'on_after_send';
 
+	public function init()
+	{
+		parent::init();
+		$this->on(self::EVENT_BEFORE_INSERT, array($this, 'on_b_insert_set_date'));
+	}
+
 	public function rules()
 	{
-		return array();
+		return array(
+			array('date_create, date_send, subject, body, recipients, attachments', 'filter', 'filter' => 'trim'),
+			array('subject, body, recipients', 'required'),
+			array('subject, body, recipients, attachments', 'string', 'max' => 5000),
+		);
+	}
+
+	public function get_mailer()
+	{
+		return $this->_mailer;
 	}
 
 	public function set_mailer(PHPMailer $mailer)
@@ -55,26 +69,35 @@ class LetterModel extends ActiveRecord
 		if (!$this->getIsNewRecord()) {
 			$mailer->Subject = $this->subject;
 			$mailer->Body = $this->body;
-			$mailer->AltBody = $this->alt_body;
 			$mailer->IsHTML(true);
 
 			$recipients = Json::decode($this->recipients);
+
 			$mailer->SetFrom($recipients['from'][0], isset($recipients['from'][1]) ? $recipients['from'][1] : '');
-			foreach ($recipients['to'] as $address) {
-				$address = is_string($address) ? array($address) : $address;
-				$mailer->AddAddress($address[0], isset($address[1]) ? $address[1] : '');
+			$mailer->Sender = $recipients['from'][0];
+			if (isset($recipients['to'])) {
+				foreach ($recipients['to'] as $address) {
+					$address = is_string($address) ? array($address) : $address;
+					$mailer->AddAddress($address[0], isset($address[1]) ? $address[1] : '');
+				}
 			}
-			foreach ($recipients['cc'] as $address) {
-				$address = is_string($address) ? array($address) : $address;
-				$mailer->AddCC($address[0], isset($address[1]) ? $address[1] : '');
+			if (isset($recipients['cc'])) {
+				foreach ($recipients['cc'] as $address) {
+					$address = is_string($address) ? array($address) : $address;
+					$mailer->AddCC($address[0], isset($address[1]) ? $address[1] : '');
+				}
 			}
-			foreach ($recipients['bcc'] as $address) {
-				$address = is_string($address) ? array($address) : $address;
-				$mailer->AddBCC($address[0], isset($address[1]) ? $address[1] : '');
+			if (isset($recipients['bcc'])) {
+				foreach ($recipients['bcc'] as $address) {
+					$address = is_string($address) ? array($address) : $address;
+					$mailer->AddBCC($address[0], isset($address[1]) ? $address[1] : '');
+				}
 			}
-			foreach ($recipients['reply'] as $address) {
-				$address = is_string($address) ? array($address) : $address;
-				$mailer->AddReplyTo($address[0], isset($address[1]) ? $address[1] : '');
+			if (isset($recipients['reply'])) {
+				foreach ($recipients['reply'] as $address) {
+					$address = is_string($address) ? array($address) : $address;
+					$mailer->AddReplyTo($address[0], isset($address[1]) ? $address[1] : '');
+				}
 			}
 
 			$attachments = Json::decode($this->attachments);
@@ -129,7 +152,6 @@ class LetterModel extends ActiveRecord
 			'recipients' => Yii::t('app', 'Recipients'),
 			'subject' => Yii::t('app', 'Subject'),
 			'body' => Yii::t('app', 'Body message'),
-			'alt_body' => Yii::t('app', 'Alternative body message'),
 			'attachments' => Yii::t('app', 'Attachments'),
 			'is_html' => Yii::t('app', 'Is HTML'),
 		);
@@ -137,7 +159,7 @@ class LetterModel extends ActiveRecord
 
 	public static function tableName()
 	{
-		return '{{%letter}}';
+		return Yii::$app->getComponent('postman')->table;
 	}
 
 	/**
@@ -161,7 +183,7 @@ class LetterModel extends ActiveRecord
 		$Postman = Yii::$app->getComponent('postman');
 		/** @var LetterModel[] $LetterModels */
 		$LetterModels = self::find()
-			->where('date_send IS NULL')
+			->where('date_send = :date', [':date' => '0000-00-00 00:00:00'])
 			->orderBy('id ASC')
 			->limit($num_letters_per_step)
 			->all();
@@ -203,5 +225,10 @@ class LetterModel extends ActiveRecord
 		$Event = new Event();
 		$Event->sender = $this;
 		$this->trigger(self::EVENT_AFTER_SEND, $Event);
+	}
+
+	public function on_b_insert_set_date()
+	{
+		$this->date_create = new Expression('NOW()');
 	}
 }

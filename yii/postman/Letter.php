@@ -36,17 +36,8 @@ abstract class Letter extends Component
 	/** @var string a body of a message */
 	protected $body;
 
-	/** @var string an alternative body of a message */
-	protected $alt_body;
-
 	/** @var array recipients */
-	protected $recipients = array(
-		'from' => array(),
-		'to' => array(),
-		'cc' => array(),
-		'bcc' => array(),
-		'reply' => array(),
-	);
+	protected $recipients = array();
 
 	/** @var array attachments */
 	protected $attachments;
@@ -86,6 +77,17 @@ abstract class Letter extends Component
 	}
 
 	/**
+	 * the method sets the "subject" object
+	 * @param string $subject
+	 * @return $this
+	 */
+	public function set_subject($subject)
+	{
+		$this->subject = $subject;
+		return $this;
+	}
+
+	/**
 	 * the method sets the value of the "From" field
 	 * @param array $from = array('user@somehost.com') || array('user@somehost.com', 'John Smith')
 	 *
@@ -98,12 +100,31 @@ abstract class Letter extends Component
 		return $this;
 	}
 
+	public function get_recipients()
+	{
+		return $this->recipients;
+	}
+
+	public function get_count_recipients()
+	{
+		$count = 1; // one is "from"
+		foreach ($this->recipients as $type => $recipients) {
+			if ($type === 'from') {
+				continue;
+			}
+			$count += count($recipients);
+		}
+		return $count;
+	}
+
 	/**
 	 * the method sets several recipients
 	 * @param array $to
 	 * @param array $cc
 	 * @param array $bcc
 	 * @param array $reply_to
+	 *
+	 * @deprecated
 	 *
 	 * @return $this
 	 */
@@ -127,35 +148,47 @@ abstract class Letter extends Component
 
 	/**
 	 * the method adds a recipient
-	 * @param array $address
+	 * @param array $address = array('user@somehost.com') || array('user@somehost.com', 'John Smith')
 	 *
 	 * @return $this
 	 */
 	public function add_address($address)
 	{
-		return $this->_add_addr('to', $address);
+		$args = func_get_args();
+		foreach ($args as $address) {
+			$this->_add_addr('to', $address);
+		}
+		return $this;
 	}
 
 	/**
 	 * the method adds a recipient to Cc
-	 * @param array $address
+	 * @param array $address = array('user@somehost.com') || array('user@somehost.com', 'John Smith')
 	 *
 	 * @return $this
 	 */
 	public function add_cc_address($address)
 	{
-		return $this->_add_addr('cc', $address);
+		$args = func_get_args();
+		foreach ($args as $address) {
+			$this->_add_addr('cc', $address);
+		}
+		return $this;
 	}
 
 	/**
 	 * the method adds a recipient to Bcc
-	 * @param array $address
+	 * @param array $address = array('user@somehost.com') || array('user@somehost.com', 'John Smith')
 	 *
 	 * @return $this
 	 */
 	public function add_bcc_address($address)
 	{
-		return $this->_add_addr('bcc', $address);
+		$args = func_get_args();
+		foreach ($args as $address) {
+			$this->_add_addr('bcc', $address);
+		}
+		return $this;
 	}
 
 	/**
@@ -166,7 +199,11 @@ abstract class Letter extends Component
 	 */
 	public function add_reply_to($address)
 	{
-		return $this->_add_addr('reply', $address);
+		$args = func_get_args();
+		foreach ($args as $address) {
+			$this->_add_addr('reply', $address);
+		}
+		return $this;
 	}
 
 	/**
@@ -206,6 +243,11 @@ abstract class Letter extends Component
 		return $this;
 	}
 
+	public function get_attachments()
+	{
+		return $this->attachments;
+	}
+
 	/**
 	 * the method sends a letter
 	 * @param bool $immediately
@@ -226,9 +268,11 @@ abstract class Letter extends Component
 				->send_immediately();
 		}
 
+		$this->_error = $LetterModel->get_last_error();
+
 		$this->on_after_send();
 
-		return $result;
+		return $result === true ? (int)$LetterModel->id : false;
 	}
 
 	/**
@@ -239,6 +283,11 @@ abstract class Letter extends Component
 	public function get_last_error()
 	{
 		return $this->_error;
+	}
+
+	public function get_postman()
+	{
+		return $this->_postman;
 	}
 
 	/**
@@ -252,7 +301,6 @@ abstract class Letter extends Component
 		$LetterModel->recipients = Json::encode($this->recipients);
 		$LetterModel->subject = $this->subject;
 		$LetterModel->body = $this->body;
-		$LetterModel->alt_body = $this->alt_body;
 		$LetterModel->attachments = Json::encode($this->attachments);
 
 		return $LetterModel;

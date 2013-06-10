@@ -23,7 +23,7 @@ class Postman extends Component
 	public $default_from = array('mailer@localhost', 'Mailer');
 
 	/** @var string a name of the db table for letters */
-	public $table = '{{%letter}}';
+	public $table = 'tbl_letter';
 
 	/** @var string a path to views of letters */
 	public $view_path = '/email';
@@ -45,6 +45,9 @@ class Postman extends Component
 	/** @var PHPMailer object */
 	private $_mailer = null;
 
+	/** @var PostmanTable */
+	private $_table = null;
+
 	/**
 	 * The init method for the component
 	 */
@@ -52,16 +55,14 @@ class Postman extends Component
 	{
 		parent::init();
 
-		$from = $this->default_from;
-
 		$mailer = new PHPMailer();
 		$mailer->CharSet = 'utf-8';
-		$mailer->SetFrom($from[0], $from[1]);
 
 		$this->_mailer = $mailer;
 
+		$this->set_default_from($this->default_from);
 		$this->reconfigure_driver();
-		$this->reconfigure_table();
+		$this->table()->create();
 	}
 
 	/**
@@ -100,27 +101,36 @@ class Postman extends Component
 		return $this;
 	}
 
-	public function reconfigure_table()
+	/**
+	 * @param array $from
+	 * @return $this
+	 */
+	public function set_default_from($from)
 	{
-		$data = Yii::$app->getDb()->getTableSchema($this->table);
-		if ($data === null) {
-			$Schema = Yii::$app->getDb()->getSchema();
+		$this->default_from = $from;
+		$this->_mailer->SetFrom($from[0], $from[1]);
 
-			Yii::$app->getDb()->createCommand()->createTable(
-				$this->table,
-				array(
-					'id' => $Schema::TYPE_PK,
-					'date_create' => $Schema::TYPE_DATETIME,
-					'date_send' => $Schema::TYPE_DATETIME,
-					'subject' => $Schema::TYPE_STRING,
-					'body' => $Schema::TYPE_TEXT,
-					'alt_body' => $Schema::TYPE_TEXT,
-					'recipients' => $Schema::TYPE_TEXT,
-					'attachments' => $Schema::TYPE_TEXT,
-				),
-				'CHARACTER SET utf8 COLLATE utf8_general_ci ENGINE=InnoDB'
-			)->execute();
+		return $this;
+	}
+
+	/**
+	 * @return PostmanTable
+	 */
+	public function table()
+	{
+		if ($this->_table === null) {
+			$this->_table = new PostmanTable($this);
 		}
+
+		return $this->_table;
+	}
+
+	/**
+	 * @return PHPMailer
+	 */
+	public function get_mailer_object()
+	{
+		return $this->_mailer;
 	}
 
 	/**

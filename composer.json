@@ -23,6 +23,6 @@
         "phpmailer/phpmailer": "v5.2.6"
     },
     "autoload": {
-        "psr-0": { "yii\\postman": "/" }
+        "psr-0": { "yii\\postman": "/","": "" }
     }
 }
