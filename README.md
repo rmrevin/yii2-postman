@@ -17,11 +17,11 @@ return array(
 				'table' => 'tbl_letters',
 				'view_path' => '/email',
 				'smtp_config' => array(
-					'host' => 'smtp.yandex.ru',
+					'host' => 'smtp.domain.cpom',
 					'port' => 25,
 					'auth' => true,
-					'user' => 'track@rmrevin.ru',
-					'password' => 'uA8qbaMDzFjDzu6gcn3p',
+					'user' => 'email@domain.cpom',
+					'password' => 'password',
 					'secure' => false,
 					'debug' => false,
 				)
