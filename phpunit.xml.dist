@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<phpunit bootstrap="./tests/unit/bootstrap.php"
+         colors="true"
+         convertErrorsToExceptions="true"
+         convertNoticesToExceptions="true"
+         convertWarningsToExceptions="true"
+         stopOnFailure="false">
+    <listeners>
+        <listener class="\postmantest\TestListener" file="./tests/unit/TestListener.php"/>
+    </listeners>
+    <filter>
+        <blacklist>
+            <directory suffix=".php">./tests</directory>
+            <directory suffix=".php">./vendor</directory>
+        </blacklist>
+    </filter>
+    <testsuites>
+        <testsuite name="Test Suite">
+            <directory>./tests/unit/postman</directory>
+        </testsuite>
+    </testsuites>
+    <logging>
+        <log type="coverage-html" target="./tests/coverage"/>
+    </logging>
+</phpunit>
