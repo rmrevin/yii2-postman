@@ -17,24 +17,21 @@ class RawLetter extends Letter
 	/**
 	 * @param string $subject  a subject of a message
 	 * @param string $body     a text of a message
-	 * @param string $alt_body an alternative text of a message
 	 */
-	public function __construct($subject, $body, $alt_body = null)
+	public function __construct($subject, $body)
 	{
 		parent::__construct();
 
-		$this->set_data($subject, $body, $alt_body);
+		$this->set_data($subject, $body);
 	}
 
 	/**
 	 * @param string $subject  a subject of a message
 	 * @param string $body     a text of a message
-	 * @param string $alt_body an alternative text of a message
 	 */
-	public function set_data($subject, $body, $alt_body = null)
+	public function set_data($subject, $body)
 	{
 		$this->subject = $subject;
 		$this->body = $body;
-		$this->alt_body = $alt_body;
 	}
 }
