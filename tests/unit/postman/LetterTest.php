@@ -57,12 +57,13 @@ class LetterTest extends TestCase
 	{
 		$Letter = new RawLetter('Subject', 'Text');
 
-		$Letter->add_attachment(realpath(__DIR__ . '/../data/phptime-copyright.png'), 'phptime-copyright.png');
+		$test_file_name = 'phptime.ru.png';
+		$Letter->add_attachment(realpath(__DIR__ . '/../data/' . $test_file_name), $test_file_name);
 
 		$attachments = $Letter->get_attachments();
 
-		$this->assertEquals(substr($attachments[0]['path'], -38), '/tests/unit/data/phptime-copyright.png');
-		$this->assertEquals($attachments[0]['name'], 'phptime-copyright.png');
+		$this->assertEquals(substr($attachments[0]['path'], -31), '/tests/unit/data/' . $test_file_name);
+		$this->assertEquals($attachments[0]['name'], $test_file_name);
 		$this->assertEquals($attachments[0]['encoding'], 'base64');
 		$this->assertEquals($attachments[0]['type'], 'application/octet-stream');
 	}
