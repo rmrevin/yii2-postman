@@ -2,7 +2,7 @@
 /**
  * VideoTest.php
  * @author: Roman Revin <xgismox@gmail.com>
- * @date  : 09.06.13
+ * @date  : 09.06.2013
  */
 
 namespace postmantest;

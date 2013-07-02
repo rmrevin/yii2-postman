@@ -2,7 +2,7 @@
 /**
  * ViewLetter.php
  * @author: Roman Revin <xgismox@gmail.com>
- * @date  : 31.05.13
+ * @date  : 31.05.2013
  */
 
 namespace yii\postman;

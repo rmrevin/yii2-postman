@@ -2,7 +2,7 @@
 /**
  * main.php
  * @author: Roman Revin <xgismox@gmail.com>
- * @date  : 08.06.13
+ * @date  : 08.06.2013
  */
 
 return [

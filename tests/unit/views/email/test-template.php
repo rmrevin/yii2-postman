@@ -2,7 +2,7 @@
 /**
  * test-template.php
  * @author: Roman Revin <xgismox@gmail.com>
- * @date  : 10.06.13
+ * @date  : 10.06.2013
  */
 
 ?>
