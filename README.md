@@ -49,31 +49,9 @@ if(!$Letter->send()){
 // Yii::app()->getViewPath() . Postman::$default_view_path . '/' . 'message-view.php'
 // path to view: /protected/views/email/message-view.php
 $Letter = new \yii\postman\ViewLetter('Subject', 'message-view', array('url'=>'http://...'));
-$Letter->add_address_list(
-	// recipients
-	array(
-		array('user1@somehost.com', 'User 1 name'),
-		array('user2@somehost.com', 'User 2 name'),
-		array('user3@somehost.com', 'User 3 name'),
-	),
-	// cc recipients
-	array(
-	   	array('cc-user1@somehost.com', 'User 1 name'),
-	   	array('cc-user2@somehost.com', 'User 2 name'),
-	   	array('cc-user3@somehost.com', 'User 3 name'),
-	   ),
-	// bcc recipients
-	array(
-		array('bcc-user1@somehost.com', 'User 1 name'),
-		array('bcc-user2@somehost.com', 'User 2 name'),
-		array('bcc-user3@somehost.com', 'User 3 name'),
-	),
-	// reply to
-	array(
-		array('abuse@somehost.com'),
-	)
-);
-
+$Letter
+	->add_address(array('user@somehost.com', 'John Smith'))
+	->add_attachment('/path/to/file.tar.gz');
 if(!$Letter->send()){
 	echo $Letter->get_last_error();
 }

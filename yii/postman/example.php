@@ -34,4 +34,4 @@ $Letter = new ViewLetter('Subject', 'letter-view', array(
 $Letter
 	->add_address(array('user@somehost.com', 'John Smith'))
 	->add_attachment('/path/to/file.tar.gz')
-	->send_immediately();
+	->send();
