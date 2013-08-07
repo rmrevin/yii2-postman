@@ -1,7 +1,18 @@
 Mail Extension for Yii2
 ============
 
-Configuration
+Installation
+------------
+In `composer.json`:
+```
+{
+    "require-dev": {
+        "rmrevin/yii2-postman": "1.1.*"
+    }
+}
+```
+
+configuration
 -------------
 `/protected/config/main.php`
 ```php
