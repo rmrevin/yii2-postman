@@ -17,9 +17,6 @@ class LetterModelTest extends TestCase
 
 	public function testMain()
 	{
-		/** @var Postman $Postman */
-		$Postman = \Yii::$app->getComponent('postman');
-
 		$NewLetter = new LetterModel();
 		$NewLetter->attributes = [
 			'subject' => uniqid(rand(), true),
@@ -125,7 +122,7 @@ class LetterModelTest extends TestCase
 		$this->assertEquals(5, $count);
 
 		LetterModel::cron(1);
-		$this->expectOutputString('The following From address failed: test@domain.com : Called Mail() without being connected'."\n");
+		$this->expectOutputString('The following From address failed: test@domain.com : Called Mail() without being connected' . "\n");
 	}
 
 	/**
