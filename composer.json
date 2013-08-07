@@ -1,7 +1,7 @@
 {
 	"name": "rmrevin/yii2-postman",
 	"description": "Mail module for Yii2.",
-	"keywords": ["yii", "phpmailer", "mail", "email"],
+	"keywords": ["yii2", "phpmailer", "mail", "email", "sending"],
 	"type": "library",
 	"license": "BSD-3-Clause",
 	"support": {
