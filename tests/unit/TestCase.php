@@ -1,4 +1,9 @@
 <?php
+/**
+ * TestCase.php
+ * @author Roman Revin
+ * @link http://phptime.ru
+ */
 
 namespace postmantest;
 

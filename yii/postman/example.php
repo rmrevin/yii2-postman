@@ -1,8 +1,8 @@
 <?php
 /**
  * example.php
- * @author: Roman Revin <xgismox@gmail.com>
- * @date  : 01.06.2013
+ * @author Roman Revin
+ * @link http://phptime.ru
  */
 
 namespace yii\postman;

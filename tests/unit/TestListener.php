@@ -1,8 +1,8 @@
 <?php
 /**
- * VideoTest.php
- * @author: Roman Revin <xgismox@gmail.com>
- * @date  : 09.06.2013
+ * TestListener.php
+ * @author Roman Revin
+ * @link http://phptime.ru
  */
 
 namespace postmantest;

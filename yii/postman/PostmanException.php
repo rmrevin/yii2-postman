@@ -1,8 +1,8 @@
 <?php
 /**
  * PostmanException.php
- * @author: Roman Revin <xgismox@gmail.com>
- * @date  : 31.05.2013
+ * @author Roman Revin
+ * @link http://phptime.ru
  */
 
 namespace yii\postman;
