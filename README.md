@@ -17,17 +17,17 @@ configuration
 `/protected/config/main.php`
 ```php
 <?
-return array(
+return [
 	// ...
-	'components' => array(
+	'components' => [
 		// ...
-		'postman' => array(
+		'postman' => [
 			'class' => 'yii\postman\Postman',
 				'driver' => 'smtp',
 				'default_from' => array('track@rmrevin.ru', 'Mailer'),
 				'table' => 'tbl_letters',
 				'view_path' => '/email',
-				'smtp_config' => array(
+				'smtp_config' => [
 					'host' => 'smtp.domain.cpom',
 					'port' => 25,
 					'auth' => true,
@@ -35,11 +35,11 @@ return array(
 					'password' => 'password',
 					'secure' => false,
 					'debug' => false,
-				)
-		),
-	),
+				]
+		],
+	],
 	// ...
-);
+];
 ```
 
 Usage
@@ -70,5 +70,5 @@ if(!$Letter->send()){
 
 In cron script:
 ```php
-LetterMode::cron($num_letters_per_step = 10)
+LetterModel::cron($num_letters_per_step = 10)
 ```

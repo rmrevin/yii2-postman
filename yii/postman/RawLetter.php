@@ -15,8 +15,8 @@ class RawLetter extends Letter
 {
 
 	/**
-	 * @param string $subject  a subject of a message
-	 * @param string $body     a text of a message
+	 * @param string $subject a subject of a message
+	 * @param string $body a text of a message
 	 */
 	public function __construct($subject, $body)
 	{
@@ -26,8 +26,8 @@ class RawLetter extends Letter
 	}
 
 	/**
-	 * @param string $subject  a subject of a message
-	 * @param string $body     a text of a message
+	 * @param string $subject a subject of a message
+	 * @param string $body a text of a message
 	 */
 	public function set_data($subject, $body)
 	{

@@ -7,12 +7,12 @@
 
 namespace yii\postman\models;
 
-use Yii;
 use PHPMailer;
 use yii\base\Event;
 use yii\db\ActiveRecord;
 use yii\db\Expression;
 use yii\helpers\Json;
+use Yii;
 use yii\postman\LetterException;
 
 /**
@@ -47,16 +47,26 @@ class LetterModel extends ActiveRecord
 	public function init()
 	{
 		parent::init();
-		$this->on(self::EVENT_BEFORE_INSERT, array($this, 'on_b_insert_set_date'));
+		$this->on(self::EVENT_BEFORE_INSERT, [$this, 'on_b_insert_set_date']);
 	}
 
 	public function rules()
 	{
-		return array(
-			array('date_create, date_send, subject, body, recipients, attachments', 'filter', 'filter' => 'trim'),
-			array('subject, body, recipients', 'required'),
-			array('subject, body, recipients, attachments', 'string', 'max' => 5000),
-		);
+		return [
+			['date_create', 'filter', 'filter' => 'trim'],
+			['date_send', 'filter', 'filter' => 'trim'],
+			['subject', 'filter', 'filter' => 'trim'],
+			['body', 'filter', 'filter' => 'trim'],
+			['recipients', 'filter', 'filter' => 'trim'],
+			['attachments', 'filter', 'filter' => 'trim'],
+			['subject', 'required'],
+			['body', 'required'],
+			['recipients', 'required'],
+			['subject,', 'string', 'max' => 5000],
+			['body', 'string', 'max' => 5000],
+			['recipients', 'string', 'max' => 5000],
+			['attachments', 'string', 'max' => 5000],
+		];
 	}
 
 	public function get_mailer()
@@ -77,25 +87,25 @@ class LetterModel extends ActiveRecord
 			$mailer->Sender = $recipients['from'][0];
 			if (isset($recipients['to'])) {
 				foreach ($recipients['to'] as $address) {
-					$address = is_string($address) ? array($address) : $address;
+					$address = is_string($address) ? [$address] : $address;
 					$mailer->AddAddress($address[0], isset($address[1]) ? $address[1] : '');
 				}
 			}
 			if (isset($recipients['cc'])) {
 				foreach ($recipients['cc'] as $address) {
-					$address = is_string($address) ? array($address) : $address;
+					$address = is_string($address) ? [$address] : $address;
 					$mailer->AddCC($address[0], isset($address[1]) ? $address[1] : '');
 				}
 			}
 			if (isset($recipients['bcc'])) {
 				foreach ($recipients['bcc'] as $address) {
-					$address = is_string($address) ? array($address) : $address;
+					$address = is_string($address) ? [$address] : $address;
 					$mailer->AddBCC($address[0], isset($address[1]) ? $address[1] : '');
 				}
 			}
 			if (isset($recipients['reply'])) {
 				foreach ($recipients['reply'] as $address) {
-					$address = is_string($address) ? array($address) : $address;
+					$address = is_string($address) ? [$address] : $address;
 					$mailer->AddReplyTo($address[0], isset($address[1]) ? $address[1] : '');
 				}
 			}
@@ -134,7 +144,7 @@ class LetterModel extends ActiveRecord
 			$this->_error = $this->_mailer->ErrorInfo;
 		} else {
 			$this->date_send = new Expression('NOW()');
-			$this->update(false, array('date_send'));
+			$this->update(false, ['date_send']);
 		}
 
 		$this->on_after_send();
@@ -144,7 +154,7 @@ class LetterModel extends ActiveRecord
 
 	public function attributeLabels()
 	{
-		return array(
+		return [
 			'id' => Yii::t('app', 'ID'),
 			'date_create' => Yii::t('app', 'Date create'),
 			'date_send' => Yii::t('app', 'Date send'),
@@ -154,7 +164,7 @@ class LetterModel extends ActiveRecord
 			'body' => Yii::t('app', 'Body message'),
 			'attachments' => Yii::t('app', 'Attachments'),
 			'is_html' => Yii::t('app', 'Is HTML'),
-		);
+		];
 	}
 
 	public static function tableName()

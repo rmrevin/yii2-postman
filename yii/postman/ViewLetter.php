@@ -25,8 +25,8 @@ class ViewLetter extends Letter
 
 	/**
 	 * @param string $subject a subject of a message
-	 * @param string $view    a name of a view file
-	 * @param array  $params  params for a view
+	 * @param string $view a name of a view file
+	 * @param array $params params for a view
 	 */
 	public function __construct($subject, $view, $params = array())
 	{
@@ -36,7 +36,7 @@ class ViewLetter extends Letter
 
 		$this->set_view($view)->set_params($params);
 
-		$this->on(self::EVENT_BEFORE_SEND, array($this, 'before_send'));
+		$this->on(self::EVENT_BEFORE_SEND, [$this, 'before_send']);
 	}
 
 	/**
@@ -48,6 +48,7 @@ class ViewLetter extends Letter
 	public function set_view($view)
 	{
 		$this->_view = $view;
+
 		return $this;
 	}
 
@@ -60,6 +61,7 @@ class ViewLetter extends Letter
 	public function set_params($params)
 	{
 		$this->_params = $params;
+
 		return $this;
 	}
 
@@ -73,7 +75,7 @@ class ViewLetter extends Letter
 	{
 		$path = Yii::$app->getViewPath() . $this->_postman->view_path . DIRECTORY_SEPARATOR . $this->_view . '.php';
 		if (!file_exists($path)) {
-			throw new LetterException(Yii::t('app', 'View file «{path}» not found.', array('{path}' => $path)));
+			throw new LetterException(Yii::t('app', 'View file «{path}» not found.', ['{path}' => $path]));
 		} else {
 			$this->body = Yii::$app->getView()->renderFile($path, $this->_params);
 		}

@@ -7,12 +7,12 @@
 
 namespace yii\postman;
 
-use Yii;
 use PHPMailer;
 use yii\base\Component;
 use yii\base\Event;
 use yii\db\Expression;
 use yii\helpers\Json;
+use Yii;
 use yii\postman\models\LetterModel;
 
 /**
@@ -37,7 +37,7 @@ abstract class Letter extends Component
 	protected $body;
 
 	/** @var array recipients */
-	protected $recipients = array();
+	protected $recipients = [];
 
 	/** @var array attachments */
 	protected $attachments;
@@ -84,12 +84,13 @@ abstract class Letter extends Component
 	public function set_subject($subject)
 	{
 		$this->subject = $subject;
+
 		return $this;
 	}
 
 	/**
 	 * the method sets the value of the "From" field
-	 * @param array $from = array('user@somehost.com') || array('user@somehost.com', 'John Smith')
+	 * @param array $from = ['user@somehost.com'] || ['user@somehost.com', 'John Smith']
 	 *
 	 * @return $this
 	 */
@@ -114,6 +115,7 @@ abstract class Letter extends Component
 			}
 			$count += count($recipients);
 		}
+
 		return $count;
 	}
 
@@ -128,7 +130,7 @@ abstract class Letter extends Component
 	 *
 	 * @return $this
 	 */
-	public function add_address_list($to = array(), $cc = array(), $bcc = array(), $reply_to = array())
+	public function add_address_list($to = [], $cc = [], $bcc = [], $reply_to = [])
 	{
 		foreach ($to as $address) {
 			$this->add_address($address);
@@ -148,7 +150,7 @@ abstract class Letter extends Component
 
 	/**
 	 * the method adds a recipient
-	 * @param array $address = array('user@somehost.com') || array('user@somehost.com', 'John Smith')
+	 * @param array $address = ['user@somehost.com'] || ['user@somehost.com', 'John Smith']
 	 *
 	 * @return $this
 	 */
@@ -158,12 +160,13 @@ abstract class Letter extends Component
 		foreach ($args as $address) {
 			$this->_add_addr('to', $address);
 		}
+
 		return $this;
 	}
 
 	/**
 	 * the method adds a recipient to Cc
-	 * @param array $address = array('user@somehost.com') || array('user@somehost.com', 'John Smith')
+	 * @param array $address = ['user@somehost.com'] || ['user@somehost.com', 'John Smith']
 	 *
 	 * @return $this
 	 */
@@ -173,12 +176,13 @@ abstract class Letter extends Component
 		foreach ($args as $address) {
 			$this->_add_addr('cc', $address);
 		}
+
 		return $this;
 	}
 
 	/**
 	 * the method adds a recipient to Bcc
-	 * @param array $address = array('user@somehost.com') || array('user@somehost.com', 'John Smith')
+	 * @param array $address = ['user@somehost.com'] || ['user@somehost.com', 'John Smith']
 	 *
 	 * @return $this
 	 */
@@ -188,12 +192,13 @@ abstract class Letter extends Component
 		foreach ($args as $address) {
 			$this->_add_addr('bcc', $address);
 		}
+
 		return $this;
 	}
 
 	/**
 	 * the method adds a "Reply-to" address
-	 * @param array $address = array('user@somehost.com') || array('user@somehost.com', 'John Smith')
+	 * @param array $address = ['user@somehost.com'] || ['user@somehost.com', 'John Smith']
 	 *
 	 * @return $this
 	 */
@@ -203,6 +208,7 @@ abstract class Letter extends Component
 		foreach ($args as $address) {
 			$this->_add_addr('reply', $address);
 		}
+
 		return $this;
 	}
 
@@ -215,11 +221,12 @@ abstract class Letter extends Component
 	 */
 	private function _add_addr($type, $address)
 	{
-		$address = !is_array($address) ? array($address) : $address;
+		$address = !is_array($address) ? [$address] : $address;
 		if (!isset($this->recipients[$type])) {
-			$this->recipients[$type] = array();
+			$this->recipients[$type] = [];
 		}
 		$this->recipients[$type][] = $address;
+
 		return $this;
 	}
 
@@ -234,12 +241,13 @@ abstract class Letter extends Component
 	 */
 	public function add_attachment($path, $name = '', $encoding = 'base64', $type = 'application/octet-stream')
 	{
-		$this->attachments[] = array(
+		$this->attachments[] = [
 			'path' => $path,
 			'name' => $name,
 			'encoding' => $encoding,
 			'type' => $type
-		);
+		];
+
 		return $this;
 	}
 
