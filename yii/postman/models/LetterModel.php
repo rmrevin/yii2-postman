@@ -62,7 +62,7 @@ class LetterModel extends ActiveRecord
 			['subject', 'required'],
 			['body', 'required'],
 			['recipients', 'required'],
-			['subject,', 'string', 'max' => 5000],
+			['subject', 'string', 'max' => 5000],
 			['body', 'string', 'max' => 5000],
 			['recipients', 'string', 'max' => 5000],
 			['attachments', 'string', 'max' => 5000],
