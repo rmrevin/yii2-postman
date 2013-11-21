@@ -7,8 +7,8 @@
 
 namespace yii\postman;
 
-use Yii;
 use PHPMailer;
+use Yii;
 use yii\base\Component;
 
 /**

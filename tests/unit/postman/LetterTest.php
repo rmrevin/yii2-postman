@@ -8,7 +8,6 @@
 namespace postmantest\postman;
 
 use postmantest\TestCase;
-use yii\postman\Postman;
 use yii\postman\RawLetter;
 
 class LetterTest extends TestCase
