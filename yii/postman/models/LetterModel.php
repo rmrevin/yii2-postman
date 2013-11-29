@@ -193,8 +193,8 @@ class LetterModel extends ActiveRecord
 		$Postman = Yii::$app->getComponent('postman');
 		/** @var LetterModel[] $LetterModels */
 		$LetterModels = self::find()
-			->where('date_send = :date', [':date' => '0000-00-00 00:00:00'])
-			->orderBy('id ASC')
+			->where('[[date_send]] = :date OR [[date_send]] IS NULL', [':date' => '0000-00-00 00:00:00'])
+			->orderBy(['id' => SORT_ASC])
 			->limit($num_letters_per_step)
 			->all();
 		foreach ($LetterModels as $LetterModel) {
