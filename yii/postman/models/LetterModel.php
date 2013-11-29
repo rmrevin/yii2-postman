@@ -189,6 +189,8 @@ class LetterModel extends ActiveRecord
 
 	public static function cron($num_letters_per_step = 10)
 	{
+		$send = 0;
+
 		/** @var \yii\postman\Postman $Postman */
 		$Postman = Yii::$app->getComponent('postman');
 		/** @var LetterModel[] $LetterModels */
@@ -203,8 +205,12 @@ class LetterModel extends ActiveRecord
 			$err = $LetterModel->get_last_error();
 			if (!empty($err)) {
 				echo $err . "\n";
+			} else {
+				$send++;
 			}
 		}
+
+		return $send;
 	}
 
 	/**
