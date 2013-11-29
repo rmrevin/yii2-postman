@@ -187,6 +187,10 @@ class LetterModel extends ActiveRecord
 		return true;
 	}
 
+	/**
+	 * @param int $num_letters_per_step
+	 * @return int
+	 */
 	public static function cron($num_letters_per_step = 10)
 	{
 		$send = 0;
