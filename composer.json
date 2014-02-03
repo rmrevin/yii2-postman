@@ -2,7 +2,7 @@
 	"name": "rmrevin/yii2-postman",
 	"description": "Mail module for Yii2.",
 	"keywords": ["yii2", "phpmailer", "mail", "email", "sending"],
-	"type": "library",
+	"type": "yii2-extension",
 	"license": "BSD-3-Clause",
 	"support": {
 		"issues": "https://github.com/rmrevin/yii2-postman/issues?state=open",
@@ -23,8 +23,8 @@
 		"phpmailer/phpmailer": "v5.2.6"
 	},
 	"autoload": {
-		"psr-0": {
-			"yii\\postman": "./"
+		"psr-4": {
+			"yii\\postman\\": ""
 		}
 	}
 }
