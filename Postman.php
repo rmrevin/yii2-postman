@@ -20,10 +20,10 @@ class Postman extends Component
 {
 
 	/** @var array the default value for the "From" field */
-	public $default_from = array('mailer@localhost', 'Mailer');
+	public $default_from = ['mailer@localhost', 'Mailer'];
 
 	/** @var string a name of the db table for letters */
-	public $table = 'tbl_letter';
+	public $table = '{{%letter}';
 
 	/** @var string a path to views of letters */
 	public $view_path = '/email';
@@ -32,15 +32,15 @@ class Postman extends Component
 	public $driver = 'mail';
 
 	/** @var array smtp config */
-	public $smtp_config = array(
+	public $smtp_config = [
 		'host' => 'localhost',
 		'port' => 25,
 		'auth' => false,
 		'user' => '',
 		'password' => '',
-		'secure' => 'ssl',
+		'secure' => false,
 		'debug' => false,
-	);
+	];
 
 	/** @var PHPMailer object */
 	private $_mailer = null;

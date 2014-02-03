@@ -24,7 +24,7 @@ return [
 		'postman' => [
 			'class' => 'yii\postman\Postman',
 				'driver' => 'smtp',
-				'default_from' => array('track@rmrevin.ru', 'Mailer'),
+				'default_from' => ['track@rmrevin.ru', 'Mailer'],
 				'table' => 'tbl_letters',
 				'view_path' => '/email',
 				'smtp_config' => [
