@@ -25,7 +25,7 @@ return [
 			'class' => 'rmrevin\yii\postman\Postman',
 				'driver' => 'smtp',
 				'default_from' => ['track@rmrevin.ru', 'Mailer'],
-				'table' => 'tbl_letters',
+				'table' => '{{%postman_letter}}',
 				'view_path' => '/email',
 				'smtp_config' => [
 					'host' => 'smtp.domain.cpom',

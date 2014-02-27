@@ -21,7 +21,7 @@ class Component extends \yii\base\Component
 	public $default_from = ['mailer@localhost', 'Mailer'];
 
 	/** @var string a name of the db table for letters */
-	public $table = '{{%letter}';
+	public $table = '{{%postman_letter}}';
 
 	/** @var string a path to views of letters */
 	public $view_path = '/email';
