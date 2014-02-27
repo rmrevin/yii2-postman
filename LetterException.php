@@ -5,15 +5,15 @@
  * @link http://phptime.ru
  */
 
-namespace yii\postman;
+namespace rmrevin\yii\postman;
 
-use yii\base\ErrorException;
+use yii\base\Exception;
 
 /**
  * Class LetterException
- * @package yii\postman
+ * @package rmrevin\yii\postman
  */
-class LetterException extends ErrorException
+class LetterException extends Exception
 {
 
 }

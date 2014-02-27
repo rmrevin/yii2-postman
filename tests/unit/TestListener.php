@@ -5,7 +5,7 @@
  * @link http://phptime.ru
  */
 
-namespace postmantest;
+namespace rmrevin\yii\postman\tests\unit;
 
 class TestListener implements \PHPUnit_Framework_TestListener
 {

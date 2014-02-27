@@ -5,20 +5,20 @@
  * @link http://phptime.ru
  */
 
-namespace postmantest\postman;
+namespace rmrevin\yii\postman\tests\unit\postman;
 
-use postmantest\TestCase;
-use yii\postman\Postman;
+use rmrevin\yii\postman\Component;
+use rmrevin\yii\postman\tests\unit\TestCase;
 
 class PostmanTest extends TestCase
 {
 
 	public function testMain()
 	{
-		/** @var Postman $Postman */
+		/** @var Component $Postman */
 		$Postman = \Yii::$app->getComponent('postman');
 
-		$this->assertInstanceOf('\yii\postman\Postman', $Postman);
+		$this->assertInstanceOf(Component::className(), $Postman);
 
 		$this->assertTrue($Postman->table()->exists(true));
 		$Postman->table()->drop();
@@ -36,7 +36,7 @@ class PostmanTest extends TestCase
 
 	public function testDriverMail()
 	{
-		/** @var Postman $Postman */
+		/** @var Component $Postman */
 		$Postman = \Yii::$app->getComponent('postman');
 		$Postman->driver = 'mail';
 		$Postman->reconfigure_driver();
@@ -44,7 +44,7 @@ class PostmanTest extends TestCase
 
 	public function testDriverSendmail()
 	{
-		/** @var Postman $Postman */
+		/** @var Component $Postman */
 		$Postman = \Yii::$app->getComponent('postman');
 		$Postman->driver = 'sendmail';
 		$Postman->reconfigure_driver();
@@ -52,7 +52,7 @@ class PostmanTest extends TestCase
 
 	public function testDriverQmail()
 	{
-		/** @var Postman $Postman */
+		/** @var Component $Postman */
 		$Postman = \Yii::$app->getComponent('postman');
 		$Postman->driver = 'qmail';
 		$Postman->reconfigure_driver();
@@ -60,7 +60,7 @@ class PostmanTest extends TestCase
 
 	public function testDriverSMTP()
 	{
-		/** @var Postman $Postman */
+		/** @var Component $Postman */
 		$Postman = \Yii::$app->getComponent('postman');
 		$Postman->driver = 'smtp';
 		$Postman->smtp_config = \Yii::$app->params['smtp'];
@@ -68,11 +68,11 @@ class PostmanTest extends TestCase
 	}
 
 	/**
-	 * @expectedException \yii\postman\PostmanException
+	 * @expectedException \rmrevin\yii\postman\PostmanException
 	 */
 	public function testDriverError()
 	{
-		/** @var Postman $Postman */
+		/** @var Component $Postman */
 		$Postman = \Yii::$app->getComponent('postman');
 		$Postman->driver = 'unknow';
 		$Postman->smtp_config = \Yii::$app->params['smtp'];

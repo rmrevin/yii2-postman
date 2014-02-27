@@ -6,7 +6,7 @@
          convertWarningsToExceptions="true"
          stopOnFailure="false">
     <listeners>
-        <listener class="\postmantest\TestListener" file="./tests/unit/TestListener.php"/>
+        <listener class="\rmrevin\yii\postman\tests\unit\TestListener" file="./tests/unit/TestListener.php"/>
     </listeners>
     <filter>
         <blacklist>

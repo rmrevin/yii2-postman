@@ -7,7 +7,6 @@ $_SERVER['SCRIPT_FILENAME'] = __FILE__;
 
 require_once(__DIR__ . '/../../vendor/yiisoft/yii2/Yii.php');
 require_once(__DIR__ . '/../../vendor/autoload.php');
-Yii::importNamespaces(require(__DIR__ . '/../../vendor/composer/autoload_namespaces.php'));
 
 Yii::setAlias('@yiiunit', __DIR__);
 

@@ -5,29 +5,27 @@
  * @link http://phptime.ru
  */
 
-namespace yii\postman;
+namespace rmrevin\yii\postman;
 
 use PHPMailer;
-use yii\base\Component;
+use rmrevin\yii\postman\models\LetterModel;
 use yii\base\Event;
 use yii\db\Expression;
 use yii\helpers\Json;
-use Yii;
-use yii\postman\models\LetterModel;
 
 /**
  * Class Letter
  * The abstract class that implements the basic functionality of letters;
  *
- * @package yii\postman
+ * @package rmrevin\yii\postman
  */
-abstract class Letter extends Component
+abstract class Letter extends \yii\base\Component
 {
 
 	/** @var PHPMailer object */
 	protected $_mailer = null;
 
-	/** @var Postman object */
+	/** @var Component object */
 	protected $_postman = null;
 
 	/** @var string a subject */
@@ -53,22 +51,22 @@ abstract class Letter extends Component
 
 	public function __construct()
 	{
-		if (!Yii::$app->hasComponent('postman')) {
-			throw new LetterException(Yii::t('app', 'You need to configure the component "Postman".'));
+		if (!\Yii::$app->hasComponent('postman')) {
+			throw new LetterException(\Yii::t('app', 'You need to configure the component "Postman".'));
 		}
 
-		/** @var Postman $Postman */
-		$Postman = Yii::$app->getComponent('postman');
+		/** @var Component $Postman */
+		$Postman = \Yii::$app->getComponent('postman');
 		$this->set_postman($Postman);
 	}
 
 	/**
 	 * the method sets the "postman" object
-	 * @param Postman $Postman
+	 * @param Component $Postman
 	 *
 	 * @return $this
 	 */
-	public function set_postman(Postman $Postman)
+	public function set_postman(Component $Postman)
 	{
 		$this->_postman = $Postman;
 		$this->set_from($Postman->default_from);

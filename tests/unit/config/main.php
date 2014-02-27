@@ -5,6 +5,8 @@
  * @link http://phptime.ru
  */
 
+use rmrevin\yii\postman\Component;
+
 return [
 	'id' => 'testapp',
 	'basePath' => realpath(__DIR__ . '/..'),
@@ -16,7 +18,7 @@ return [
 			'password' => '',
 		],
 		'postman' => [
-			'class' => 'yii\postman\Postman',
+			'class' => Component::className(),
 			'driver' => 'sendmail',
 			'default_from' => ['no-reply@localhost', 'Mailer'],
 			'table' => 'tbl_letters_test',

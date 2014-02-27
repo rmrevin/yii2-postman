@@ -1,22 +1,20 @@
 <?php
 /**
- * Postman.php
+ * Component.php
  * @author Roman Revin
  * @link http://phptime.ru
  */
 
-namespace yii\postman;
+namespace rmrevin\yii\postman;
 
 use PHPMailer;
-use Yii;
-use yii\base\Component;
 
 /**
- * Class Postman
+ * Class Component
  * The main class to wrap a config of PHPMailer
- * @package yii\postman
+ * @package rmrevin\yii\postman
  */
-class Postman extends Component
+class Component extends \yii\base\Component
 {
 
 	/** @var array the default value for the "From" field */
@@ -95,7 +93,7 @@ class Postman extends Component
 				$mailer->SMTPDebug = $this->smtp_config['debug'];
 				break;
 			default:
-				throw new PostmanException(Yii::t('app', 'Could not determine the driver is sending letters.'));
+				throw new PostmanException(\Yii::t('app', 'Could not determine the driver is sending letters.'));
 		}
 
 		return $this;

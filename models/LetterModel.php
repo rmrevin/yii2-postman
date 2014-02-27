@@ -5,19 +5,19 @@
  * @link http://phptime.ru
  */
 
-namespace yii\postman\models;
+namespace rmrevin\yii\postman\models;
 
 use PHPMailer;
+use rmrevin\yii\postman\Component;
+use rmrevin\yii\postman\LetterException;
 use yii\base\Event;
 use yii\db\ActiveRecord;
 use yii\db\Expression;
 use yii\helpers\Json;
-use Yii;
-use yii\postman\LetterException;
 
 /**
  * Class LetterModel
- * @package yii\postman\models
+ * @package rmrevin\yii\postman\models
  *
  * @property integer $id         ;
  * @property string  $date_create;
@@ -55,17 +55,21 @@ class LetterModel extends ActiveRecord
 		return [
 			['date_create', 'filter', 'filter' => 'trim'],
 			['date_send', 'filter', 'filter' => 'trim'],
+
 			['subject', 'filter', 'filter' => 'trim'],
-			['body', 'filter', 'filter' => 'trim'],
-			['recipients', 'filter', 'filter' => 'trim'],
-			['attachments', 'filter', 'filter' => 'trim'],
 			['subject', 'required'],
-			['body', 'required'],
-			['recipients', 'required'],
 			['subject', 'string', 'max' => 5000],
+
+			['body', 'filter', 'filter' => 'trim'],
+			['body', 'required'],
 			['body', 'string', 'max' => 5000],
+
+			['recipients', 'filter', 'filter' => 'trim'],
+			['recipients', 'required'],
 			['recipients', 'string', 'max' => 5000],
+
 			['attachments', 'string', 'max' => 5000],
+			['attachments', 'filter', 'filter' => 'trim'],
 		];
 	}
 
@@ -155,21 +159,21 @@ class LetterModel extends ActiveRecord
 	public function attributeLabels()
 	{
 		return [
-			'id' => Yii::t('app', 'ID'),
-			'date_create' => Yii::t('app', 'Date create'),
-			'date_send' => Yii::t('app', 'Date send'),
-			'from' => Yii::t('app', 'From'),
-			'recipients' => Yii::t('app', 'Recipients'),
-			'subject' => Yii::t('app', 'Subject'),
-			'body' => Yii::t('app', 'Body message'),
-			'attachments' => Yii::t('app', 'Attachments'),
-			'is_html' => Yii::t('app', 'Is HTML'),
+			'id' => \Yii::t('app', 'ID'),
+			'date_create' => \Yii::t('app', 'Date create'),
+			'date_send' => \Yii::t('app', 'Date send'),
+			'from' => \Yii::t('app', 'From'),
+			'recipients' => \Yii::t('app', 'Recipients'),
+			'subject' => \Yii::t('app', 'Subject'),
+			'body' => \Yii::t('app', 'Body message'),
+			'attachments' => \Yii::t('app', 'Attachments'),
+			'is_html' => \Yii::t('app', 'Is HTML'),
 		];
 	}
 
 	public static function tableName()
 	{
-		return Yii::$app->getComponent('postman')->table;
+		return \Yii::$app->getComponent('postman')->table;
 	}
 
 	/**
@@ -181,7 +185,7 @@ class LetterModel extends ActiveRecord
 	protected function _check_mailer()
 	{
 		if (!($this->_mailer instanceof PHPMailer)) {
-			throw new LetterException(Yii::t('app', 'PHPMailer object not initialize.'));
+			throw new LetterException(\Yii::t('app', 'PHPMailer object not initialize.'));
 		}
 
 		return true;
@@ -195,8 +199,8 @@ class LetterModel extends ActiveRecord
 	{
 		$send = 0;
 
-		/** @var \yii\postman\Postman $Postman */
-		$Postman = Yii::$app->getComponent('postman');
+		/** @var Component $Postman */
+		$Postman = \Yii::$app->getComponent('postman');
 		/** @var LetterModel[] $LetterModels */
 		$LetterModels = self::find()
 			->where('[[date_send]] = :date OR [[date_send]] IS NULL', [':date' => '0000-00-00 00:00:00'])

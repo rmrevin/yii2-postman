@@ -5,37 +5,39 @@
  * @link http://phptime.ru
  */
 
-namespace yii\postman;
+namespace rmrevin\yii\postman;
 
-use Yii;
-
+/**
+ * Class PostmanTable
+ * @package rmrevin\yii\postman
+ */
 class PostmanTable
 {
 
-	/** @var \yii\postman\Postman */
+	/** @var \rmrevin\yii\postman\Component */
 	private $_component;
 
-	public function __construct(Postman $component)
+	public function __construct(Component $component)
 	{
 		$this->_component = $component;
 	}
 
 	public function exists($refresh = false)
 	{
-		return null !== Yii::$app->getDb()->getTableSchema($this->_component->table, $refresh);
+		return null !== \Yii::$app->getDb()->getTableSchema($this->_component->table, $refresh);
 	}
 
 	public function drop()
 	{
-		return Yii::$app->getDb()->createCommand()->dropTable($this->_component->table)->execute();
+		return \Yii::$app->getDb()->createCommand()->dropTable($this->_component->table)->execute();
 	}
 
 	public function create()
 	{
 		if ($this->exists() === false) {
-			$Schema = Yii::$app->getDb()->getSchema();
+			$Schema = \Yii::$app->getDb()->getSchema();
 
-			Yii::$app->getDb()->createCommand()->createTable(
+			\Yii::$app->getDb()->createCommand()->createTable(
 				$this->_component->table,
 				array(
 					'id' => $Schema::TYPE_PK,

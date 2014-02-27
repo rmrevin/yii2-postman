@@ -5,14 +5,19 @@
  * @link http://phptime.ru
  */
 
-namespace postmantest\postman;
+namespace rmrevin\yii\postman\tests\unit\postman;
 
-use postmantest\TestCase;
-use yii\postman\models\LetterModel;
-use yii\postman\RawLetter;
+use rmrevin\yii\postman\Component;
+use rmrevin\yii\postman\models\LetterModel;
+use rmrevin\yii\postman\RawLetter;
+use rmrevin\yii\postman\tests\unit\TestCase;
 
 class RawLetterTest extends TestCase
 {
+
+	public $run_sendmail_test = true;
+	public $run_mail_test = true;
+	public $run_qmail_test = true;
 
 	public function testMain()
 	{
@@ -20,7 +25,7 @@ class RawLetterTest extends TestCase
 		$Letter->add_address(\Yii::$app->params['demo_email']);
 		$Letter->add_attachment(realpath(__DIR__ . '/../data/phptime-copyright.png'), 'phptime-copyright.png');
 		$this->assertEmpty($Letter->get_last_error(), $Letter->get_last_error());
-		$this->assertInstanceOf('\yii\postman\RawLetter', $Letter);
+		$this->assertInstanceOf(RawLetter::className(), $Letter);
 
 		return $Letter;
 	}
@@ -30,7 +35,13 @@ class RawLetterTest extends TestCase
 	 */
 	public function testSendSendmail(RawLetter $Letter)
 	{
-		/** @var \yii\postman\Postman $Postman */
+		if ($this->run_sendmail_test === false) {
+			$this->markTestSkipped();
+
+			return;
+		}
+
+		/** @var Component $Postman */
 		$Postman = \Yii::$app->getComponent('postman');
 		$Postman->driver = 'sendmail';
 		$Postman->reconfigure_driver();
@@ -52,7 +63,13 @@ class RawLetterTest extends TestCase
 	 */
 	public function testSendMail(RawLetter $Letter)
 	{
-		/** @var \yii\postman\Postman $Postman */
+		if ($this->run_mail_test === false) {
+			$this->markTestSkipped();
+
+			return;
+		}
+
+		/** @var Component $Postman */
 		$Postman = \Yii::$app->getComponent('postman');
 		$Postman->driver = 'mail';
 		$Postman->reconfigure_driver();
@@ -74,7 +91,13 @@ class RawLetterTest extends TestCase
 	 */
 	public function testSendQmail(RawLetter $Letter)
 	{
-		/** @var \yii\postman\Postman $Postman */
+		if ($this->run_qmail_test === false) {
+			$this->markTestSkipped();
+
+			return;
+		}
+
+		/** @var Component $Postman */
 		$Postman = \Yii::$app->getComponent('postman');
 		$Postman->driver = 'qmail';
 		$Postman->reconfigure_driver();
@@ -96,7 +119,7 @@ class RawLetterTest extends TestCase
 	 */
 	public function testSendSMTP(RawLetter $Letter)
 	{
-		/** @var \yii\postman\Postman $Postman */
+		/** @var Component $Postman */
 		$Postman = \Yii::$app->getComponent('postman');
 		$Postman->driver = 'smtp';
 		$Postman->smtp_config = \Yii::$app->params['smtp'];

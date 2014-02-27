@@ -5,15 +5,15 @@
  * @link http://phptime.ru
  */
 
-namespace postmantest;
+namespace rmrevin\yii\postman\tests\unit;
 
+use rmrevin\yii\postman\Component;
 use yii\helpers\ArrayHelper;
-use yii\postman\Postman;
 
 /**
  * This is the base class for all yii framework unit tests.
  */
-abstract class TestCase extends \yii\test\TestCase
+abstract class TestCase extends \PHPUnit_Framework_TestCase
 {
 
 	public static $params;
@@ -28,7 +28,7 @@ abstract class TestCase extends \yii\test\TestCase
 	{
 		parent::tearDown();
 		$Postman = \Yii::$app->getComponent('postman');
-		if ($Postman instanceof Postman) {
+		if ($Postman instanceof Component) {
 			$Postman->table()->drop();
 		}
 		$this->destroy_application();

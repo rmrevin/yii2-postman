@@ -5,14 +5,13 @@
  * @link http://phptime.ru
  */
 
-namespace yii\postman;
+namespace rmrevin\yii\postman;
 
-use Yii;
 use yii\base\Event;
 
 /**
  * Class ViewLetter
- * @package yii\postman
+ * @package rmrevin\yii\postman
  */
 class ViewLetter extends Letter
 {
@@ -73,11 +72,11 @@ class ViewLetter extends Letter
 	 */
 	public function before_send(Event $Event)
 	{
-		$path = Yii::$app->getViewPath() . $this->_postman->view_path . DIRECTORY_SEPARATOR . $this->_view . '.php';
+		$path = \Yii::$app->getViewPath() . $this->_postman->view_path . DIRECTORY_SEPARATOR . $this->_view . '.php';
 		if (!file_exists($path)) {
-			throw new LetterException(Yii::t('app', 'View file «{path}» not found.', ['{path}' => $path]));
+			throw new LetterException(\Yii::t('app', 'View file «{path}» not found.', ['{path}' => $path]));
 		} else {
-			$this->body = Yii::$app->getView()->renderFile($path, $this->_params);
+			$this->body = \Yii::$app->getView()->renderFile($path, $this->_params);
 		}
 	}
 }

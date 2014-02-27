@@ -5,15 +5,13 @@
  * @link http://phptime.ru
  */
 
-namespace yii\postman;
-
-$Letter = new RawLetter('Subject', 'Message body', 'Alternative message body', true);
+$Letter = new \rmrevin\yii\postman\RawLetter('Subject', 'Message body', 'Alternative message body', true);
 $Letter
 	->add_address('user@somehost.com')
 	->add_bcc_address(['tech@somehost.com'])
 	->send();
 
-$Letter = new ViewLetter('Subject', 'letter-view', [
+$Letter = new \rmrevin\yii\postman\ViewLetter('Subject', 'letter-view', [
 	'name' => 'Rosy',
 	'date' => date('Y-m-d')
 ], false);

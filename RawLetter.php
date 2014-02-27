@@ -5,11 +5,11 @@
  * @link http://phptime.ru
  */
 
-namespace yii\postman;
+namespace rmrevin\yii\postman;
 
 /**
  * Class RawLetter
- * @package yii\postman
+ * @package rmrevin\yii\postman
  */
 class RawLetter extends Letter
 {

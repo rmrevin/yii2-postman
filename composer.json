@@ -4,6 +4,7 @@
 	"keywords": ["yii2", "phpmailer", "mail", "email", "sending"],
 	"type": "yii2-extension",
 	"license": "BSD-3-Clause",
+	"minimum-stability": "dev",
 	"support": {
 		"issues": "https://github.com/rmrevin/yii2-postman/issues?state=open",
 		"wiki": "https://github.com/rmrevin/yii2-postman/wiki",
@@ -17,14 +18,13 @@
 			"role": "Founder and project lead"
 		}
 	],
-	"minimum-stability": "dev",
 	"require": {
 		"yiisoft/yii2": "*",
 		"phpmailer/phpmailer": "v5.2.6"
 	},
 	"autoload": {
 		"psr-4": {
-			"yii\\postman\\": ""
+			"rmrevin\\yii\\postman\\": ""
 		}
 	}
 }

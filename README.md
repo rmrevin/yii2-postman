@@ -7,7 +7,7 @@ In `composer.json`:
 ```
 {
     "require": {
-        "rmrevin/yii2-postman": "1.1.*"
+        "rmrevin/yii2-postman": "1.3.*"
     }
 }
 ```
@@ -22,7 +22,7 @@ return [
 	'components' => [
 		// ...
 		'postman' => [
-			'class' => 'yii\postman\Postman',
+			'class' => 'rmrevin\yii\postman\Postman',
 				'driver' => 'smtp',
 				'default_from' => ['track@rmrevin.ru', 'Mailer'],
 				'table' => 'tbl_letters',
@@ -47,7 +47,7 @@ Usage
 ```php
 <?
 // ...
-$Letter = new \yii\postman\RawLetter('Subject', 'Body message', 'Alternative body message');
+$Letter = new \rmrevin\yii\postman\RawLetter('Subject', 'Body message', 'Alternative body message');
 $Letter
 	->add_address('user@somehost.com', 'User name')
 	->add_cc_address('user2@somehost.com', 'CC user name')
@@ -59,7 +59,7 @@ if(!$Letter->send()){
 // path to view algorithm:
 // Yii::app()->getViewPath() . Postman::$default_view_path . '/' . 'message-view.php'
 // path to view: /protected/views/email/message-view.php
-$Letter = new \yii\postman\ViewLetter('Subject', 'message-view', array('url'=>'http://...'));
+$Letter = new \rmrevin\yii\postman\ViewLetter('Subject', 'message-view', array('url'=>'http://...'));
 $Letter
 	->add_address(array('user@somehost.com', 'John Smith'))
 	->add_attachment('/path/to/file.tar.gz');

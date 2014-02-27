@@ -5,12 +5,12 @@
  * @link http://phptime.ru
  */
 
-namespace postmantest\postman;
+namespace rmrevin\yii\postman\tests\unit\postman;
 
-use postmantest\TestCase;
-use yii\postman\models\LetterModel;
-use yii\postman\Postman;
-use yii\postman\RawLetter;
+use rmrevin\yii\postman\Component;
+use rmrevin\yii\postman\RawLetter;
+use rmrevin\yii\postman\tests\unit\TestCase;
+use rmrevin\yii\postman\models\LetterModel;
 
 class LetterModelTest extends TestCase
 {
@@ -32,7 +32,7 @@ class LetterModelTest extends TestCase
 		} else {
 			$Letter = LetterModel::find($NewLetter->id);
 
-			$this->assertInstanceOf('\yii\postman\models\LetterModel', $Letter);
+			$this->assertInstanceOf(LetterModel::className(), $Letter);
 
 			$this->assertEquals(1, $NewLetter->delete());
 		}
@@ -50,7 +50,7 @@ class LetterModelTest extends TestCase
 
 		/** @var LetterModel $LetterModel */
 		$LetterModel = LetterModel::find($letter_id);
-		$this->assertInstanceOf('\yii\postman\models\LetterModel', $LetterModel);
+		$this->assertInstanceOf(LetterModel::className(), $LetterModel);
 
 		$LetterModel->set_mailer($Letter->get_postman()->get_clone_mailer_object());
 		$this->assertInstanceOf('PHPMailer', $LetterModel->get_mailer());
@@ -88,7 +88,9 @@ class LetterModelTest extends TestCase
 		$Letter->send();
 		$Letter->send();
 
-		$count = LetterModel::find()->where(['date_send' => '0000-00-00 00:00:00'])->count();
+		$count = LetterModel::find()
+			->where(['date_send' => null])
+			->count();
 		$this->assertEquals(5, $count);
 
 		LetterModel::cron(3);
@@ -97,7 +99,7 @@ class LetterModelTest extends TestCase
 
 	public function testErrorCronSending()
 	{
-		/** @var Postman $Postman */
+		/** @var Component $Postman */
 		$Postman = \Yii::$app->getComponent('postman');
 		$Mailer = $Postman->get_mailer_object();
 		$Mailer->IsSMTP();
@@ -118,7 +120,9 @@ class LetterModelTest extends TestCase
 		$Letter->send();
 		$Letter->send();
 
-		$count = LetterModel::find()->where(['date_send' => '0000-00-00 00:00:00'])->count();
+		$count = LetterModel::find()
+			->where(['date_send' => null])
+			->count();
 		$this->assertEquals(5, $count);
 
 		LetterModel::cron(1);
@@ -126,7 +130,7 @@ class LetterModelTest extends TestCase
 	}
 
 	/**
-	 * @expectedException \yii\postman\LetterException
+	 * @expectedException \rmrevin\yii\postman\LetterException
 	 */
 	public function testNotInitMailerException()
 	{

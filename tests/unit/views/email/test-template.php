@@ -3,6 +3,10 @@
  * test-template.php
  * @author Roman Revin
  * @link http://phptime.ru
+ *
+ * @var string $name
+ * @var string $age
+ * @var string $sex
  */
 
 ?>

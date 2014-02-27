@@ -5,10 +5,10 @@
  * @link http://phptime.ru
  */
 
-namespace postmantest\postman;
+namespace rmrevin\yii\postman\tests\unit\postman;
 
-use postmantest\TestCase;
-use yii\postman\RawLetter;
+use rmrevin\yii\postman\RawLetter;
+use rmrevin\yii\postman\tests\unit\TestCase;
 
 class LetterTest extends TestCase
 {
@@ -68,7 +68,7 @@ class LetterTest extends TestCase
 	}
 
 	/**
-	 * @expectedException \yii\postman\LetterException
+	 * @expectedException \rmrevin\yii\postman\LetterException
 	 */
 	public function testPostmanNotSet()
 	{
