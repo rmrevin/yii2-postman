@@ -1,30 +1,37 @@
 {
-	"name": "rmrevin/yii2-postman",
-	"description": "Mail module for Yii2.",
-	"keywords": ["yii2", "phpmailer", "mail", "email", "sending"],
-	"type": "yii2-extension",
-	"license": "BSD-3-Clause",
-	"minimum-stability": "dev",
-	"support": {
-		"issues": "https://github.com/rmrevin/yii2-postman/issues?state=open",
-		"wiki": "https://github.com/rmrevin/yii2-postman/wiki",
-		"source": "https://github.com/rmrevin/yii2-postman"
-	},
-	"authors": [
-		{
-			"name": "Revin Roman",
-			"email": "xgismox@gmail.com",
-			"homepage": "http://rmrevin.ru/",
-			"role": "Founder and project lead"
-		}
-	],
-	"require": {
-		"yiisoft/yii2": "*",
-		"phpmailer/phpmailer": "v5.2.6"
-	},
-	"autoload": {
-		"psr-4": {
-			"rmrevin\\yii\\postman\\": ""
-		}
-	}
+  "name": "rmrevin/yii2-postman",
+  "description": "Mail module for Yii2.",
+  "keywords": [
+    "yii2",
+    "phpmailer",
+    "mail",
+    "email",
+    "sending",
+    "queue"
+  ],
+  "type": "yii2-extension",
+  "license": "BSD-3-Clause",
+  "minimum-stability": "stable",
+  "support": {
+    "issues": "https://github.com/rmrevin/yii2-postman/issues?state=open",
+    "wiki": "https://github.com/rmrevin/yii2-postman/wiki",
+    "source": "https://github.com/rmrevin/yii2-postman"
+  },
+  "authors": [
+    {
+      "name": "Revin Roman",
+      "email": "xgismox@gmail.com",
+      "homepage": "http://rmrevin.ru/",
+      "role": "Founder and project lead"
+    }
+  ],
+  "require": {
+    "yiisoft/yii2": "~2.0",
+    "phpmailer/phpmailer": "v5.2.6"
+  },
+  "autoload": {
+    "psr-4": {
+      "rmrevin\\yii\\postman\\": ""
+    }
+  }
 }

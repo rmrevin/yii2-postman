@@ -1,8 +1,7 @@
 <?php
 /**
  * Letter.php
- * @author Roman Revin
- * @link http://phptime.ru
+ * @author Roman Revin http://phptime.ru
  */
 
 namespace rmrevin\yii\postman;
@@ -22,313 +21,287 @@ use yii\helpers\Json;
 abstract class Letter extends \yii\base\Component
 {
 
-	/** @var PHPMailer object */
-	protected $_mailer = null;
+    /** @var PHPMailer object */
+    protected $_mailer = null;
 
-	/** @var Component object */
-	protected $_postman = null;
+    /** @var string a subject */
+    protected $subject;
 
-	/** @var string a subject */
-	protected $subject;
+    /** @var string a body of a message */
+    protected $body;
 
-	/** @var string a body of a message */
-	protected $body;
+    /** @var array recipients */
+    protected $recipients = [];
 
-	/** @var array recipients */
-	protected $recipients = [];
+    /** @var array attachments */
+    protected $attachments;
 
-	/** @var array attachments */
-	protected $attachments;
+    /** @var string a last error of a message */
+    private $_error = null;
 
-	/** @var string a last error of a message */
-	private $_error = null;
+    /** the name of the event that occurs before sending emails */
+    const EVENT_BEFORE_SEND = 'beforeSend';
 
-	/** the name of the event that occurs before sending emails*/
-	const EVENT_BEFORE_SEND = 'on_before_send';
+    /** the name of the event that occurs after sending emails */
+    const EVENT_AFTER_SEND = 'afterSend';
 
-	/** the name of the event that occurs after sending emails */
-	const EVENT_AFTER_SEND = 'on_after_send';
+    /**
+     * @inheritdoc
+     */
+    public function __construct($config = [])
+    {
+        parent::__construct($config);
 
-	public function __construct()
-	{
-		if (!\Yii::$app->hasComponent('postman')) {
-			throw new LetterException(\Yii::t('app', 'You need to configure the component "Postman".'));
-		}
+        if (!\Yii::$app->has(Component::COMPONENT)) {
+            throw new LetterException(\Yii::t('app', 'You need to configure the component `{component}`.', [
+                'component' => Component::COMPONENT,
+            ]));
+        }
 
-		/** @var Component $Postman */
-		$Postman = \Yii::$app->getComponent('postman');
-		$this->set_postman($Postman);
-	}
+        $Postman = \rmrevin\yii\postman\Component::get();
+        $this->setFrom($Postman->default_from);
+    }
 
-	/**
-	 * the method sets the "postman" object
-	 * @param Component $Postman
-	 *
-	 * @return $this
-	 */
-	public function set_postman(Component $Postman)
-	{
-		$this->_postman = $Postman;
-		$this->set_from($Postman->default_from);
+    /**
+     * the method sets the "subject"
+     * @param string $subject
+     * @return static
+     */
+    public function setSubject($subject)
+    {
+        $this->subject = $subject;
 
-		return $this;
-	}
+        return $this;
+    }
 
-	/**
-	 * the method sets the "subject" object
-	 * @param string $subject
-	 * @return $this
-	 */
-	public function set_subject($subject)
-	{
-		$this->subject = $subject;
+    /**
+     * the method sets the "body"
+     * @param string $body
+     * @return static
+     */
+    public function setBody($body)
+    {
+        $this->body = $body;
 
-		return $this;
-	}
+        return $this;
+    }
 
-	/**
-	 * the method sets the value of the "From" field
-	 * @param array $from = ['user@somehost.com'] || ['user@somehost.com', 'John Smith']
-	 *
-	 * @return $this
-	 */
-	public function set_from($from)
-	{
-		$this->recipients['from'] = $from;
+    /**
+     * the method sets the value of the "From" field
+     * @param array $from = ['user@somehost.com'] || ['user@somehost.com', 'John Smith']
+     * @return static
+     */
+    public function setFrom($from)
+    {
+        $this->recipients['from'] = $from;
 
-		return $this;
-	}
+        return $this;
+    }
 
-	public function get_recipients()
-	{
-		return $this->recipients;
-	}
+    /**
+     * @return array
+     */
+    public function getRecipients()
+    {
+        return $this->recipients;
+    }
 
-	public function get_count_recipients()
-	{
-		$count = 1; // one is "from"
-		foreach ($this->recipients as $type => $recipients) {
-			if ($type === 'from') {
-				continue;
-			}
-			$count += count($recipients);
-		}
+    /**
+     * @return int
+     */
+    public function getCountRecipients()
+    {
+        $count = 1; // one is "from"
+        foreach ($this->recipients as $type => $recipients) {
+            if ($type === 'from') {
+                continue;
+            }
+            $count += count($recipients);
+        }
 
-		return $count;
-	}
+        return $count;
+    }
 
-	/**
-	 * the method sets several recipients
-	 * @param array $to
-	 * @param array $cc
-	 * @param array $bcc
-	 * @param array $reply_to
-	 *
-	 * @deprecated
-	 *
-	 * @return $this
-	 */
-	public function add_address_list($to = [], $cc = [], $bcc = [], $reply_to = [])
-	{
-		foreach ($to as $address) {
-			$this->add_address($address);
-		}
-		foreach ($cc as $address) {
-			$this->add_cc_address($address);
-		}
-		foreach ($bcc as $address) {
-			$this->add_bcc_address($address);
-		}
-		foreach ($reply_to as $address) {
-			$this->add_reply_to($address);
-		}
+    /**
+     * the method adds a recipient
+     * @param array $address = ['user@somehost.com'] || ['user@somehost.com', 'John Smith']
+     * @return static
+     */
+    public function addAddress($address)
+    {
+        $args = func_get_args();
+        foreach ($args as $address) {
+            $this->_addAddr('to', $address);
+        }
 
-		return $this;
-	}
+        return $this;
+    }
 
-	/**
-	 * the method adds a recipient
-	 * @param array $address = ['user@somehost.com'] || ['user@somehost.com', 'John Smith']
-	 *
-	 * @return $this
-	 */
-	public function add_address($address)
-	{
-		$args = func_get_args();
-		foreach ($args as $address) {
-			$this->_add_addr('to', $address);
-		}
+    /**
+     * the method adds a recipient to Cc
+     * @param array $address = ['user@somehost.com'] || ['user@somehost.com', 'John Smith']
+     *
+     * @return static
+     */
+    public function addCcAddress($address)
+    {
+        $args = func_get_args();
+        foreach ($args as $address) {
+            $this->_addAddr('cc', $address);
+        }
 
-		return $this;
-	}
+        return $this;
+    }
 
-	/**
-	 * the method adds a recipient to Cc
-	 * @param array $address = ['user@somehost.com'] || ['user@somehost.com', 'John Smith']
-	 *
-	 * @return $this
-	 */
-	public function add_cc_address($address)
-	{
-		$args = func_get_args();
-		foreach ($args as $address) {
-			$this->_add_addr('cc', $address);
-		}
+    /**
+     * the method adds a recipient to Bcc
+     * @param array $address = ['user@somehost.com'] || ['user@somehost.com', 'John Smith']
+     *
+     * @return static
+     */
+    public function addBccAddress($address)
+    {
+        $args = func_get_args();
+        foreach ($args as $address) {
+            $this->_addAddr('bcc', $address);
+        }
 
-		return $this;
-	}
+        return $this;
+    }
 
-	/**
-	 * the method adds a recipient to Bcc
-	 * @param array $address = ['user@somehost.com'] || ['user@somehost.com', 'John Smith']
-	 *
-	 * @return $this
-	 */
-	public function add_bcc_address($address)
-	{
-		$args = func_get_args();
-		foreach ($args as $address) {
-			$this->_add_addr('bcc', $address);
-		}
+    /**
+     * the method adds a "Reply-to" address
+     * @param array $address = ['user@somehost.com'] || ['user@somehost.com', 'John Smith']
+     *
+     * @return static
+     */
+    public function addReplyTo($address)
+    {
+        $args = func_get_args();
+        foreach ($args as $address) {
+            $this->_addAddr('reply', $address);
+        }
 
-		return $this;
-	}
+        return $this;
+    }
 
-	/**
-	 * the method adds a "Reply-to" address
-	 * @param array $address = ['user@somehost.com'] || ['user@somehost.com', 'John Smith']
-	 *
-	 * @return $this
-	 */
-	public function add_reply_to($address)
-	{
-		$args = func_get_args();
-		foreach ($args as $address) {
-			$this->_add_addr('reply', $address);
-		}
+    /**
+     * the method adds a recipient by type
+     * @param $type
+     * @param $address
+     *
+     * @return static
+     */
+    private function _addAddr($type, $address)
+    {
+        $address = !is_array($address) ? [$address] : $address;
+        if (!isset($this->recipients[$type])) {
+            $this->recipients[$type] = [];
+        }
+        $this->recipients[$type][] = $address;
 
-		return $this;
-	}
+        return $this;
+    }
 
-	/**
-	 * the method adds a recipient by type
-	 * @param $type
-	 * @param $address
-	 *
-	 * @return $this
-	 */
-	private function _add_addr($type, $address)
-	{
-		$address = !is_array($address) ? [$address] : $address;
-		if (!isset($this->recipients[$type])) {
-			$this->recipients[$type] = [];
-		}
-		$this->recipients[$type][] = $address;
+    /**
+     * the method adds an attachment
+     * @param string $path
+     * @param string $name
+     * @param string $encoding
+     * @param string $type
+     *
+     * @return static
+     */
+    public function addAttachment($path, $name = '', $encoding = 'base64', $type = 'application/octet-stream')
+    {
+        $this->attachments[] = [
+            'path' => $path,
+            'name' => $name,
+            'encoding' => $encoding,
+            'type' => $type
+        ];
 
-		return $this;
-	}
+        return $this;
+    }
 
-	/**
-	 * the method adds an attachment
-	 * @param string $path
-	 * @param string $name
-	 * @param string $encoding
-	 * @param string $type
-	 *
-	 * @return $this
-	 */
-	public function add_attachment($path, $name = '', $encoding = 'base64', $type = 'application/octet-stream')
-	{
-		$this->attachments[] = [
-			'path' => $path,
-			'name' => $name,
-			'encoding' => $encoding,
-			'type' => $type
-		];
+    /**
+     * @return array
+     */
+    public function getAttachments()
+    {
+        return $this->attachments;
+    }
 
-		return $this;
-	}
+    /**
+     * the method sends a letter
+     * @param bool $immediately
+     *
+     * @return bool
+     */
+    public function send($immediately = false)
+    {
+        $this->beforeSend();
 
-	public function get_attachments()
-	{
-		return $this->attachments;
-	}
+        $LetterModel = $this->_dataToModel();
+        $LetterModel->date_create = new Expression('NOW()');
+        $result = $LetterModel->save();
 
-	/**
-	 * the method sends a letter
-	 * @param bool $immediately
-	 *
-	 * @return bool
-	 */
-	public function send($immediately = false)
-	{
-		$this->on_before_send();
+        if ($immediately === true) {
+            $LetterModel
+                ->setMailer(Component::get()->getCloneMailerObject())
+                ->sendImmediately();
+        }
 
-		$LetterModel = $this->_data_to_model();
-		$LetterModel->date_create = new Expression('NOW()');
-		$result = $LetterModel->save();
+        $this->_error = $LetterModel->getLastError();
 
-		if ($immediately === true) {
-			$LetterModel
-				->set_mailer($this->_postman->get_clone_mailer_object())
-				->send_immediately();
-		}
+        $this->afterSend();
 
-		$this->_error = $LetterModel->get_last_error();
+        return $result === true ? (int)$LetterModel->id : false;
+    }
 
-		$this->on_after_send();
+    /**
+     * the method gets the message about the last error
+     *
+     * @return null|string
+     */
+    public function getLastError()
+    {
+        return $this->_error;
+    }
 
-		return $result === true ? (int)$LetterModel->id : false;
-	}
+    /**
+     * the method converts the letter data to the letter model
+     *
+     * @return LetterModel
+     */
+    private function _dataToModel()
+    {
+        $LetterModel = new LetterModel();
+        $LetterModel->recipients = Json::encode($this->recipients);
+        $LetterModel->subject = $this->subject;
+        $LetterModel->body = $this->body;
+        $LetterModel->attachments = Json::encode($this->attachments);
 
-	/**
-	 * the method gets the message about the last error
-	 *
-	 * @return null|string
-	 */
-	public function get_last_error()
-	{
-		return $this->_error;
-	}
+        return $LetterModel;
+    }
 
-	public function get_postman()
-	{
-		return $this->_postman;
-	}
+    /**
+     * before send event
+     */
+    public function beforeSend()
+    {
+        $Event = new Event();
+        $Event->sender = $this;
+        $this->trigger(self::EVENT_BEFORE_SEND, $Event);
+    }
 
-	/**
-	 * the method converts the letter data to the letter model
-	 *
-	 * @return LetterModel
-	 */
-	private function _data_to_model()
-	{
-		$LetterModel = new LetterModel();
-		$LetterModel->recipients = Json::encode($this->recipients);
-		$LetterModel->subject = $this->subject;
-		$LetterModel->body = $this->body;
-		$LetterModel->attachments = Json::encode($this->attachments);
-
-		return $LetterModel;
-	}
-
-	/**
-	 * the "before send" event method
-	 */
-	public function on_before_send()
-	{
-		$Event = new Event();
-		$Event->sender = $this;
-		$this->trigger(self::EVENT_BEFORE_SEND, $Event);
-	}
-
-	/**
-	 * the "after send" event method
-	 */
-	public function on_after_send()
-	{
-		$Event = new Event();
-		$Event->sender = $this;
-		$this->trigger(self::EVENT_AFTER_SEND, $Event);
-	}
+    /**
+     * after send event
+     */
+    public function afterSend()
+    {
+        $Event = new Event();
+        $Event->sender = $this;
+        $this->trigger(self::EVENT_AFTER_SEND, $Event);
+    }
 }

@@ -1,15 +1,15 @@
 <?php
 /**
- * RawLetter.php
+ * Exception.php
  * @author Roman Revin http://phptime.ru
  */
 
 namespace rmrevin\yii\postman;
 
 /**
- * Class RawLetter
+ * Class Exception
  * @package rmrevin\yii\postman
  */
-class RawLetter extends Letter
+class Exception extends \yii\base\Exception
 {
 }

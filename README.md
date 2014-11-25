@@ -7,7 +7,7 @@ In `composer.json`:
 ```
 {
     "require": {
-        "rmrevin/yii2-postman": "1.3.*"
+        "rmrevin/yii2-postman": "~2.0"
     }
 }
 ```
@@ -47,24 +47,28 @@ Usage
 ```php
 <?
 // ...
-$Letter = new \rmrevin\yii\postman\RawLetter('Subject', 'Body message', 'Alternative body message');
-$Letter
-	->add_address('user@somehost.com', 'User name')
-	->add_cc_address('user2@somehost.com', 'CC user name')
-	->add_attachment('/path/to/file.tar.gz', 'File name');
+(new \rmrevin\yii\postman\RawLetter())
+    ->setSubject('Subject')
+    ->setBody('Message body')
+    ->addAddress('user@somehost.com')
+    ->addBccAddress(['tech@somehost.com']);
 if(!$Letter->send()){
-	echo $Letter->get_last_error();
+	echo $Letter->getLastError();
 }
 
 // path to view algorithm:
-// Yii::app()->getViewPath() . Postman::$default_view_path . '/' . 'message-view.php'
+// Yii::app()->getViewPath() . Postman::$view_path . '/' . 'message-view.php'
 // path to view: /protected/views/email/message-view.php
-$Letter = new \rmrevin\yii\postman\ViewLetter('Subject', 'message-view', array('url'=>'http://...'));
-$Letter
-	->add_address(array('user@somehost.com', 'John Smith'))
-	->add_attachment('/path/to/file.tar.gz');
+(new \rmrevin\yii\postman\ViewLetter)
+    ->setSubject('Subject')
+    ->setBodyView('letter-view', [
+        'name' => 'Rosy',
+        'date' => date('Y-m-d')
+    ])
+    ->addAddress(['user@somehost.com', 'John Smith'])
+    ->addAttachment('/path/to/file.tar.gz');
 if(!$Letter->send()){
-	echo $Letter->get_last_error();
+	echo $Letter->getLastError();
 }
 ```
 

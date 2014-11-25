@@ -1,81 +1,69 @@
 <?php
 /**
  * PostmanTest.php
- * @author Roman Revin
- * @link http://phptime.ru
+ * @author Roman Revin http://phptime.ru
  */
 
 namespace rmrevin\yii\postman\tests\unit\postman;
 
-use rmrevin\yii\postman\Component;
-use rmrevin\yii\postman\tests\unit\TestCase;
+use rmrevin\yii\postman;
 
-class PostmanTest extends TestCase
+/**
+ * Class PostmanTest
+ * @package rmrevin\yii\postman\tests\unit\postman
+ */
+class PostmanTest extends postman\tests\unit\TestCase
 {
 
-	public function testMain()
-	{
-		/** @var Component $Postman */
-		$Postman = \Yii::$app->getComponent('postman');
+    public function testMain()
+    {
+        $Postman = \rmrevin\yii\postman\Component::get();
 
-		$this->assertInstanceOf(Component::className(), $Postman);
+        $this->assertInstanceOf(postman\Component::className(), $Postman);
 
-		$this->assertTrue($Postman->table()->exists(true));
-		$Postman->table()->drop();
-		$this->assertFalse($Postman->table()->exists(true));
-		$Postman->table()->create();
-		$this->assertTrue($Postman->table()->exists(true));
+        $PHPMailer = $Postman->getCloneMailerObject();
+        $this->assertInstanceOf('PHPMailer', $PHPMailer);
 
-		$PHPMailer = $Postman->get_clone_mailer_object();
-		$this->assertInstanceOf('PHPMailer', $PHPMailer);
+        $PHPMailer = $Postman->getMailerObject();
+        $this->assertInstanceOf('PHPMailer', $PHPMailer);
 
-		$PHPMailer = $Postman->get_mailer_object();
-		$this->assertInstanceOf('PHPMailer', $PHPMailer);
+    }
 
-	}
+    public function testDriverMail()
+    {
+        $Postman = \rmrevin\yii\postman\Component::get();
+        $Postman->driver = 'mail';
+        $Postman->reconfigureDriver();
+    }
 
-	public function testDriverMail()
-	{
-		/** @var Component $Postman */
-		$Postman = \Yii::$app->getComponent('postman');
-		$Postman->driver = 'mail';
-		$Postman->reconfigure_driver();
-	}
+    public function testDriverSendmail()
+    {
+        $Postman = \rmrevin\yii\postman\Component::get();
+        $Postman->driver = 'sendmail';
+        $Postman->reconfigureDriver();
+    }
 
-	public function testDriverSendmail()
-	{
-		/** @var Component $Postman */
-		$Postman = \Yii::$app->getComponent('postman');
-		$Postman->driver = 'sendmail';
-		$Postman->reconfigure_driver();
-	}
+    public function testDriverQmail()
+    {
+        $Postman = \rmrevin\yii\postman\Component::get();
+        $Postman->driver = 'qmail';
+        $Postman->reconfigureDriver();
+    }
 
-	public function testDriverQmail()
-	{
-		/** @var Component $Postman */
-		$Postman = \Yii::$app->getComponent('postman');
-		$Postman->driver = 'qmail';
-		$Postman->reconfigure_driver();
-	}
+    public function testDriverSMTP()
+    {
+        $Postman = \rmrevin\yii\postman\Component::get();
+        $Postman->driver = 'smtp';
+        $Postman->reconfigureDriver();
+    }
 
-	public function testDriverSMTP()
-	{
-		/** @var Component $Postman */
-		$Postman = \Yii::$app->getComponent('postman');
-		$Postman->driver = 'smtp';
-		$Postman->smtp_config = \Yii::$app->params['smtp'];
-		$Postman->reconfigure_driver();
-	}
-
-	/**
-	 * @expectedException \rmrevin\yii\postman\PostmanException
-	 */
-	public function testDriverError()
-	{
-		/** @var Component $Postman */
-		$Postman = \Yii::$app->getComponent('postman');
-		$Postman->driver = 'unknow';
-		$Postman->smtp_config = \Yii::$app->params['smtp'];
-		$Postman->reconfigure_driver();
-	}
+    /**
+     * @expectedException \rmrevin\yii\postman\Exception
+     */
+    public function testDriverError()
+    {
+        $Postman = \rmrevin\yii\postman\Component::get();
+        $Postman->driver = 'unknow';
+        $Postman->reconfigureDriver();
+    }
 }

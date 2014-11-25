@@ -1,13 +1,10 @@
 <?php
 /**
  * ViewLetter.php
- * @author Roman Revin
- * @link http://phptime.ru
+ * @author Roman Revin http://phptime.ru
  */
 
 namespace rmrevin\yii\postman;
-
-use yii\base\Event;
 
 /**
  * Class ViewLetter
@@ -16,67 +13,21 @@ use yii\base\Event;
 class ViewLetter extends Letter
 {
 
-	/** @var string name of view file */
-	private $_view = null;
+    /**
+     * @param string $view
+     * @param array $data
+     * @return static
+     * @throws \rmrevin\yii\postman\LetterException
+     */
+    public function setBodyView($view, $data = [])
+    {
+        $path = \Yii::$app->getViewPath() . Component::get()->view_path . DIRECTORY_SEPARATOR . $view . '.php';
+        if (!file_exists($path)) {
+            throw new LetterException(\Yii::t('app', 'View file «{path}» not found.', ['{path}' => $path]));
+        } else {
+            $this->body = \Yii::$app->getView()->renderFile($path, $data);
+        }
 
-	/** @var array params for view */
-	private $_params = array();
-
-	/**
-	 * @param string $subject a subject of a message
-	 * @param string $view a name of a view file
-	 * @param array $params params for a view
-	 */
-	public function __construct($subject, $view, $params = array())
-	{
-		parent::__construct();
-
-		$this->subject = $subject;
-
-		$this->set_view($view)->set_params($params);
-
-		$this->on(self::EVENT_BEFORE_SEND, [$this, 'before_send']);
-	}
-
-	/**
-	 * the method sets a name of a view file
-	 *
-	 * @param $view
-	 * @return $this
-	 */
-	public function set_view($view)
-	{
-		$this->_view = $view;
-
-		return $this;
-	}
-
-	/**
-	 * the method sets params for a view
-	 *
-	 * @param $params
-	 * @return $this
-	 */
-	public function set_params($params)
-	{
-		$this->_params = $params;
-
-		return $this;
-	}
-
-	/**
-	 * BeforeSend event method
-	 *
-	 * @param Event $Event
-	 * @throws LetterException
-	 */
-	public function before_send(Event $Event)
-	{
-		$path = \Yii::$app->getViewPath() . $this->_postman->view_path . DIRECTORY_SEPARATOR . $this->_view . '.php';
-		if (!file_exists($path)) {
-			throw new LetterException(\Yii::t('app', 'View file «{path}» not found.', ['{path}' => $path]));
-		} else {
-			$this->body = \Yii::$app->getView()->renderFile($path, $this->_params);
-		}
-	}
+        return $this;
+    }
 }

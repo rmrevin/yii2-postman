@@ -1,8 +1,7 @@
 <?php
 /**
  * test-template.php
- * @author Roman Revin
- * @link http://phptime.ru
+ * @author Roman Revin http://phptime.ru
  *
  * @var string $name
  * @var string $age

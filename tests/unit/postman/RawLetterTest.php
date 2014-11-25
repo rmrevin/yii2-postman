@@ -1,139 +1,155 @@
 <?php
 /**
  * RawLetterTest.php
- * @author Roman Revin
- * @link http://phptime.ru
+ * @author Roman Revin http://phptime.ru
  */
 
 namespace rmrevin\yii\postman\tests\unit\postman;
 
-use rmrevin\yii\postman\Component;
-use rmrevin\yii\postman\models\LetterModel;
-use rmrevin\yii\postman\RawLetter;
-use rmrevin\yii\postman\tests\unit\TestCase;
+use rmrevin\yii\postman;
 
-class RawLetterTest extends TestCase
+/**
+ * Class RawLetterTest
+ * @package rmrevin\yii\postman\tests\unit\postman
+ */
+class RawLetterTest extends postman\tests\unit\TestCase
 {
 
-	public $run_sendmail_test = true;
-	public $run_mail_test = true;
-	public $run_qmail_test = true;
+    public $run_sendmail_test = true;
+    public $run_mail_test = true;
+    public $run_qmail_test = true;
 
-	public function testMain()
-	{
-		$Letter = new RawLetter('Subject', '<b>Html text</b><br/><hr/>');
-		$Letter->add_address(\Yii::$app->params['demo_email']);
-		$Letter->add_attachment(realpath(__DIR__ . '/../data/phptime-copyright.png'), 'phptime-copyright.png');
-		$this->assertEmpty($Letter->get_last_error(), $Letter->get_last_error());
-		$this->assertInstanceOf(RawLetter::className(), $Letter);
+    /**
+     * @return \rmrevin\yii\postman\RawLetter
+     */
+    public function testMain()
+    {
+        $Letter = (new postman\RawLetter())
+            ->setSubject('Subject')
+            ->setBody('<b>Html text</b><br/><hr/>')
+            ->addAddress(\Yii::$app->params['demo_email'])
+            ->addAttachment(realpath(__DIR__ . '/../data/phptime.ru.png'), 'phptime.ru.png');
 
-		return $Letter;
-	}
+        $this->assertEmpty($Letter->getLastError(), $Letter->getLastError());
+        $this->assertInstanceOf(postman\RawLetter::className(), $Letter);
 
-	/**
-	 * @depends testMain
-	 */
-	public function testSendSendmail(RawLetter $Letter)
-	{
-		if ($this->run_sendmail_test === false) {
-			$this->markTestSkipped();
+        return $Letter;
+    }
 
-			return;
-		}
+    /**
+     * @depends testMain
+     * @param \rmrevin\yii\postman\RawLetter $Letter
+     * @throws \rmrevin\yii\postman\Exception
+     */
+    public function testSendSendmail(postman\RawLetter $Letter)
+    {
+        if ($this->run_sendmail_test === false) {
+            $this->markTestSkipped();
 
-		/** @var Component $Postman */
-		$Postman = \Yii::$app->getComponent('postman');
-		$Postman->driver = 'sendmail';
-		$Postman->reconfigure_driver();
-		$Letter->set_postman($Postman);
-		$Letter->set_from(\Yii::$app->params['default_from']);
-		$Letter->set_subject('Sendmail raw letter');
+            return;
+        }
 
-		$this->assertInternalType('integer', $Letter->send());
-		$this->assertInternalType('integer', $Letter->send(true));
+        $Postman = \rmrevin\yii\postman\Component::get();
+        $Postman->driver = 'sendmail';
+        $Postman->reconfigureDriver();
 
-		$this->assertEmpty($Letter->get_last_error(), $Letter->get_last_error());
+        $Letter->setSubject('Sendmail raw letter');
 
-		$count = LetterModel::find()->where(array('subject' => 'Sendmail raw letter'))->count();
-		$this->assertEquals(2, $count);
-	}
+        $this->assertInternalType('integer', $Letter->send());
+        $this->assertInternalType('integer', $Letter->send(true));
 
-	/**
-	 * @depends testMain
-	 */
-	public function testSendMail(RawLetter $Letter)
-	{
-		if ($this->run_mail_test === false) {
-			$this->markTestSkipped();
+        $this->assertEmpty($Letter->getLastError(), $Letter->getLastError());
 
-			return;
-		}
+        $count = postman\models\LetterModel::find()
+            ->where(['subject' => 'Sendmail raw letter'])
+            ->count();
 
-		/** @var Component $Postman */
-		$Postman = \Yii::$app->getComponent('postman');
-		$Postman->driver = 'mail';
-		$Postman->reconfigure_driver();
-		$Letter->set_postman($Postman);
-		$Letter->set_from(\Yii::$app->params['default_from']);
-		$Letter->set_subject('Native php mail() raw letter');
+        $this->assertEquals(2, $count);
+    }
 
-		$this->assertInternalType('integer', $Letter->send());
-		$this->assertInternalType('integer', $Letter->send(true));
+    /**
+     * @depends testMain
+     * @param \rmrevin\yii\postman\RawLetter $Letter
+     */
+    public function testSendMail(postman\RawLetter $Letter)
+    {
+        if ($this->run_mail_test === false) {
+            $this->markTestSkipped();
 
-		$this->assertEmpty($Letter->get_last_error(), $Letter->get_last_error());
+            return;
+        }
 
-		$count = LetterModel::find()->where(array('subject' => 'Native php mail() raw letter'))->count();
-		$this->assertEquals(2, $count);
-	}
+        $Postman = \rmrevin\yii\postman\Component::get();
+        $Postman->driver = 'mail';
+        $Postman->reconfigureDriver();
 
-	/**
-	 * @depends testMain
-	 */
-	public function testSendQmail(RawLetter $Letter)
-	{
-		if ($this->run_qmail_test === false) {
-			$this->markTestSkipped();
+        $Letter->setSubject('Native php mail() raw letter');
 
-			return;
-		}
+        $this->assertInternalType('integer', $Letter->send());
+        $this->assertInternalType('integer', $Letter->send(true));
 
-		/** @var Component $Postman */
-		$Postman = \Yii::$app->getComponent('postman');
-		$Postman->driver = 'qmail';
-		$Postman->reconfigure_driver();
-		$Letter->set_postman($Postman);
-		$Letter->set_from(\Yii::$app->params['default_from']);
-		$Letter->set_subject('Qmail raw letter');
+        $this->assertEmpty($Letter->getLastError(), $Letter->getLastError());
 
-		$this->assertInternalType('integer', $Letter->send());
-		$this->assertInternalType('integer', $Letter->send(true));
+        $count = postman\models\LetterModel::find()
+            ->where(['subject' => 'Native php mail() raw letter'])
+            ->count();
 
-		$this->assertEmpty($Letter->get_last_error(), $Letter->get_last_error());
+        $this->assertEquals(2, $count);
+    }
 
-		$count = LetterModel::find()->where(array('subject' => 'Qmail raw letter'))->count();
-		$this->assertEquals(2, $count);
-	}
+    /**
+     * @depends testMain
+     * @param \rmrevin\yii\postman\RawLetter $Letter
+     * @throws \rmrevin\yii\postman\Exception
+     */
+    public function testSendQmail(postman\RawLetter $Letter)
+    {
+        if ($this->run_qmail_test === false) {
+            $this->markTestSkipped();
 
-	/**
-	 * @depends testMain
-	 */
-	public function testSendSMTP(RawLetter $Letter)
-	{
-		/** @var Component $Postman */
-		$Postman = \Yii::$app->getComponent('postman');
-		$Postman->driver = 'smtp';
-		$Postman->smtp_config = \Yii::$app->params['smtp'];
-		$Postman->reconfigure_driver();
-		$Letter->set_postman($Postman);
-		$Letter->set_from(\Yii::$app->params['default_from']);
-		$Letter->set_subject('SMTP raw letter');
+            return;
+        }
 
-		$this->assertInternalType('integer', $Letter->send());
-		$this->assertInternalType('integer', $Letter->send(true));
+        $Postman = \rmrevin\yii\postman\Component::get();
+        $Postman->driver = 'qmail';
+        $Postman->reconfigureDriver();
 
-		$this->assertEmpty($Letter->get_last_error(), $Letter->get_last_error());
+        $Letter->setSubject('Qmail raw letter');
 
-		$count = LetterModel::find()->where(array('subject' => 'SMTP raw letter'))->count();
-		$this->assertEquals(2, $count);
-	}
+        $this->assertInternalType('integer', $Letter->send());
+        $this->assertInternalType('integer', $Letter->send(true));
+
+        $this->assertEmpty($Letter->getLastError(), $Letter->getLastError());
+
+        $count = postman\models\LetterModel::find()
+            ->where(['subject' => 'Qmail raw letter'])
+            ->count();
+
+        $this->assertEquals(2, $count);
+    }
+
+    /**
+     * @depends testMain
+     * @param \rmrevin\yii\postman\RawLetter $Letter
+     * @throws \rmrevin\yii\postman\Exception
+     */
+    public function testSendSMTP(postman\RawLetter $Letter)
+    {
+        $Postman = \rmrevin\yii\postman\Component::get();
+        $Postman->driver = 'smtp';
+        $Postman->reconfigureDriver();
+
+        $Letter->setSubject('SMTP raw letter');
+
+        $this->assertInternalType('integer', $Letter->send());
+        $this->assertInternalType('integer', $Letter->send(true));
+
+        $this->assertEmpty($Letter->getLastError(), $Letter->getLastError());
+
+        $count = postman\models\LetterModel::find()
+            ->where(['subject' => 'SMTP raw letter'])
+            ->count();
+
+        $this->assertEquals(2, $count);
+    }
 }

@@ -1,140 +1,150 @@
 <?php
 /**
  * LetterModelTest.php
- * @author Roman Revin
- * @link http://phptime.ru
+ * @author Roman Revin http://phptime.ru
  */
 
 namespace rmrevin\yii\postman\tests\unit\postman;
 
-use rmrevin\yii\postman\Component;
-use rmrevin\yii\postman\RawLetter;
-use rmrevin\yii\postman\tests\unit\TestCase;
-use rmrevin\yii\postman\models\LetterModel;
+use rmrevin\yii\postman;
 
-class LetterModelTest extends TestCase
+/**
+ * Class LetterModelTest
+ * @package rmrevin\yii\postman\tests\unit\postman
+ */
+class LetterModelTest extends postman\tests\unit\TestCase
 {
 
-	public function testMain()
-	{
-		$NewLetter = new LetterModel();
-		$NewLetter->attributes = [
-			'subject' => uniqid(rand(), true),
-			'body' => uniqid(rand(), true),
-			'recipients' => uniqid(rand(), true),
-			'attachments' => uniqid(rand(), true),
-		];
+    public function testMain()
+    {
+        $NewLetter = new postman\models\LetterModel([
+            'subject' => uniqid(rand(), true),
+            'body' => uniqid(rand(), true),
+            'recipients' => uniqid(rand(), true),
+            'attachments' => uniqid(rand(), true),
+        ]);
 
-		$this->assertNotEmpty($NewLetter->attributeLabels());
+        $this->assertNotEmpty($NewLetter->attributeLabels());
 
-		if ($NewLetter->save() === false) {
-			$this->fail('Failed to save the model. Error: ' . $NewLetter->getFirstErrors()[0]);
-		} else {
-			$Letter = LetterModel::find($NewLetter->id);
+        if ($NewLetter->save() === false) {
+            $this->fail('Failed to save the model. Error: ' . $NewLetter->getFirstErrors()[0]);
+        } else {
+            $Letter = postman\models\LetterModel::findOne($NewLetter->id);
 
-			$this->assertInstanceOf(LetterModel::className(), $Letter);
+            $this->assertInstanceOf(postman\models\LetterModel::className(), $Letter);
 
-			$this->assertEquals(1, $NewLetter->delete());
-		}
-	}
+            $this->assertEquals(1, $NewLetter->delete());
+        }
+    }
 
-	public function testSending()
-	{
-		$Letter = new RawLetter('Test sending', 'body');
-		$Letter
-			->add_address(\Yii::$app->params['demo_email'])
-			->add_cc_address(['cc@domail.com'])
-			->add_bcc_address(['bcc@domail.com'])
-			->add_reply_to(['reply@domail.com']);
-		$letter_id = $Letter->send();
+    /**
+     * @return \rmrevin\yii\postman\models\LetterModel
+     */
+    public function testSending()
+    {
+        $Letter = (new postman\RawLetter())
+            ->setSubject('Test sending')
+            ->setBody('body')
+            ->addAddress(\Yii::$app->params['demo_email'])
+            ->addCcAddress(['cc@domail.com'])
+            ->addBccAddress(['bcc@domail.com'])
+            ->addReplyTo(['reply@domail.com']);
 
-		/** @var LetterModel $LetterModel */
-		$LetterModel = LetterModel::find($letter_id);
-		$this->assertInstanceOf(LetterModel::className(), $LetterModel);
+        $letter_id = $Letter->send();
 
-		$LetterModel->set_mailer($Letter->get_postman()->get_clone_mailer_object());
-		$this->assertInstanceOf('PHPMailer', $LetterModel->get_mailer());
-		$this->assertTrue($LetterModel->send_immediately());
+        /** @var postman\models\LetterModel $LetterModel */
+        $LetterModel = postman\models\LetterModel::findOne($letter_id);
+        $this->assertInstanceOf(postman\models\LetterModel::className(), $LetterModel);
 
-		return $LetterModel;
-	}
+        $LetterModel->setMailer(\rmrevin\yii\postman\Component::get()->getCloneMailerObject());
+        $this->assertInstanceOf('PHPMailer', $LetterModel->getMailer());
+        $this->assertTrue($LetterModel->sendImmediately());
 
-	/**
-	 * @depends testSending
-	 * @param LetterModel $LetterModel
-	 */
-	public function testErrorSending(LetterModel $LetterModel)
-	{
-		$mailer = $LetterModel->get_mailer();
-		$mailer->IsSMTP();
-		$mailer->Host = 'smtp.gmail.com';
-		$mailer->Username = 'unknow';
-		$LetterModel->send_immediately();
-		$this->assertNotEmpty($LetterModel->get_last_error());
-	}
+        return $LetterModel;
+    }
 
-	public function testCronSending()
-	{
-		$Letter = new RawLetter('Test cron sending', 'body');
-		$Letter->add_address(
-			\Yii::$app->params['demo_email'],
-			['test1@domain.com'],
-			['test2@domain.com'],
-			['test3@domain.com']
-		);
-		$Letter->send();
-		$Letter->send();
-		$Letter->send();
-		$Letter->send();
-		$Letter->send();
+    /**
+     * @depends testSending
+     * @param postman\models\LetterModel $LetterModel
+     */
+    public function testErrorSending(postman\models\LetterModel $LetterModel)
+    {
+        $mailer = $LetterModel->getMailer();
+        $mailer->IsSMTP();
+        $mailer->Host = 'smtp.gmail.com';
+        $mailer->Username = 'unknow';
+        $LetterModel->sendImmediately();
+        $this->assertNotEmpty($LetterModel->getLastError());
+    }
 
-		$count = LetterModel::find()
-			->where(['date_send' => null])
-			->count();
-		$this->assertEquals(5, $count);
+    public function testCronSending()
+    {
+        $Letter = (new postman\RawLetter())
+            ->setSubject('Test cron sending')
+            ->setBody('body')
+            ->addAddress(
+                \Yii::$app->params['demo_email'],
+                ['test1@domain.com'],
+                ['test2@domain.com'],
+                ['test3@domain.com']
+            );
 
-		LetterModel::cron(3);
-		$this->expectOutputString('');
-	}
+        $Letter->send();
+        $Letter->send();
+        $Letter->send();
+        $Letter->send();
+        $Letter->send();
 
-	public function testErrorCronSending()
-	{
-		/** @var Component $Postman */
-		$Postman = \Yii::$app->getComponent('postman');
-		$Mailer = $Postman->get_mailer_object();
-		$Mailer->IsSMTP();
-		$Mailer->Host = 'smtp.google.com';
-		$Mailer->Username = 'unknow';
+        $count = postman\models\LetterModel::find()
+            ->where(['date_send' => null])
+            ->count();
 
-		$Letter = new RawLetter('Test cron sending', 'body');
-		$Letter->add_address(
-			\Yii::$app->params['demo_email'],
-			['test1@domain.com'],
-			['test2@domain.com'],
-			['test3@domain.com']
-		);
-		$Letter->set_from(['test@domain.com', 'Test']);
-		$Letter->send();
-		$Letter->send();
-		$Letter->send();
-		$Letter->send();
-		$Letter->send();
+        $this->assertEquals(5, $count);
 
-		$count = LetterModel::find()
-			->where(['date_send' => null])
-			->count();
-		$this->assertEquals(5, $count);
+        postman\models\LetterModel::cron(3);
+        $this->expectOutputString('');
+    }
 
-		LetterModel::cron(1);
-		$this->expectOutputString('The following From address failed: test@domain.com : Called Mail() without being connected' . "\n");
-	}
+    public function testErrorCronSending()
+    {
+        $Postman = \rmrevin\yii\postman\Component::get();
+        $Mailer = $Postman->getMailerObject();
+        $Mailer->IsSMTP();
+        $Mailer->Host = 'smtp.google.com';
+        $Mailer->Username = 'unknow';
 
-	/**
-	 * @expectedException \rmrevin\yii\postman\LetterException
-	 */
-	public function testNotInitMailerException()
-	{
-		$NewLetter = new LetterModel();
-		$NewLetter->send_immediately();
-	}
+        $Letter = (new postman\RawLetter())
+            ->setSubject('Test cron sending')
+            ->setBody('body')
+            ->setFrom(['test@domain.com', 'Test'])
+            ->addAddress(
+                \Yii::$app->params['demo_email'],
+                ['test1@domain.com'],
+                ['test2@domain.com'],
+                ['test3@domain.com']
+            );
+
+        $Letter->send();
+        $Letter->send();
+        $Letter->send();
+        $Letter->send();
+        $Letter->send();
+
+        $count = postman\models\LetterModel::find()
+            ->where(['date_send' => null])
+            ->count();
+        $this->assertEquals(5, $count);
+
+        postman\models\LetterModel::cron(1);
+        $this->expectOutputString('The following From address failed: test@domain.com : Called Mail() without being connected' . "\n");
+    }
+
+    /**
+     * @expectedException \rmrevin\yii\postman\LetterException
+     */
+    public function testNotInitMailerException()
+    {
+        $NewLetter = new postman\models\LetterModel();
+        $NewLetter->sendImmediately();
+    }
 }
