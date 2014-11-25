@@ -22,11 +22,11 @@ return [
             'view_path' => '/email',
             'smtp_config' => [
                 'host' => 'smtp.domain.com',
-                'port' => 25,
+                'port' => 465,
                 'auth' => true,
                 'user' => 'email@domain.com',
                 'password' => 'password',
-                'secure' => false,
+                'secure' => 'ssl',
                 'debug' => false,
             ],
         ]

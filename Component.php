@@ -37,7 +37,7 @@ class Component extends \yii\base\Component
         'auth' => false,
         'user' => '',
         'password' => '',
-        'secure' => false,
+        'secure' => false, // Sets connection prefix. Options are "", "ssl" or "tls"
         'debug' => false,
     ];
 

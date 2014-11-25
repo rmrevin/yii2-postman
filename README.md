@@ -24,16 +24,16 @@ return [
 		'postman' => [
 			'class' => 'rmrevin\yii\postman\Postman',
 				'driver' => 'smtp',
-				'default_from' => ['track@rmrevin.ru', 'Mailer'],
+				'default_from' => ['mailer@somehost.com', 'Mailer'],
 				'table' => '{{%postman_letter}}',
 				'view_path' => '/email',
 				'smtp_config' => [
 					'host' => 'smtp.domain.cpom',
-					'port' => 25,
+					'port' => 465,
 					'auth' => true,
 					'user' => 'email@domain.cpom',
 					'password' => 'password',
-					'secure' => false,
+					'secure' => 'ssl',
 					'debug' => false,
 				]
 		],
