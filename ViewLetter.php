@@ -19,11 +19,11 @@ class ViewLetter extends Letter
      * @return static
      * @throws \rmrevin\yii\postman\LetterException
      */
-    public function setBodyView($view, $data = [])
+    public function setBodyFromView($view, $data = [])
     {
-        $path = \Yii::$app->getViewPath() . Component::get()->view_path . DIRECTORY_SEPARATOR . $view . '.php';
+        $path = \Yii::$app->controller->module->getViewPath() . Component::get()->view_path . DIRECTORY_SEPARATOR . $view . '.php';
         if (!file_exists($path)) {
-            throw new LetterException(\Yii::t('app', 'View file «{path}» not found.', ['{path}' => $path]));
+            throw new LetterException(\Yii::t('app', 'View file «{path}» not found.', ['path' => $path]));
         } else {
             $this->body = \Yii::$app->getView()->renderFile($path, $data);
         }

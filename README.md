@@ -57,7 +57,7 @@ if(!$Letter->send()){
 }
 
 // path to view algorithm:
-// Yii::app()->getViewPath() . Postman::$view_path . '/' . 'message-view.php'
+// Yii::$app->controller->module->getViewPath() . Postman::$view_path . '/' . 'message-view.php'
 // path to view: /protected/views/email/message-view.php
 (new \rmrevin\yii\postman\ViewLetter)
     ->setSubject('Subject')
