@@ -57,23 +57,9 @@ class LetterModel extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            ['date_create', 'filter', 'filter' => 'trim'],
-            ['date_send', 'filter', 'filter' => 'trim'],
-
-            ['subject', 'filter', 'filter' => 'trim'],
-            ['subject', 'required'],
-            ['subject', 'string', 'max' => 5000],
-
-            ['body', 'filter', 'filter' => 'trim'],
-            ['body', 'required'],
-            ['body', 'string', 'max' => 5000],
-
-            ['recipients', 'filter', 'filter' => 'trim'],
-            ['recipients', 'required'],
-            ['recipients', 'string', 'max' => 5000],
-
-            ['attachments', 'string', 'max' => 5000],
-            ['attachments', 'filter', 'filter' => 'trim'],
+            [['subject', 'body', 'recipients'], 'required'],
+            [['date_create', 'date_send', 'subject', 'body', 'recipients', 'attachments'], 'filter', 'filter' => 'trim'],
+            [['subject', 'body', 'recipients', 'attachments'], 'string', 'max' => 5000],
         ];
     }
 

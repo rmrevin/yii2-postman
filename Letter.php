@@ -244,15 +244,20 @@ abstract class Letter extends \yii\base\Component
 
         $LetterModel = $this->_dataToModel();
         $LetterModel->date_create = new Expression('NOW()');
-        $result = $LetterModel->save();
+        if ($LetterModel->validate()) {
+            $result = $LetterModel->save();
 
-        if ($immediately === true) {
-            $LetterModel
-                ->setMailer(Component::get()->getCloneMailerObject())
-                ->sendImmediately();
+            if ($immediately === true) {
+                $LetterModel
+                    ->setMailer(Component::get()->getCloneMailerObject())
+                    ->sendImmediately();
+            }
+
+            $this->_error = $LetterModel->getLastError();
+        } else {
+            $result = false;
+            $this->_error = array_shift($LetterModel->getFirstErrors());
         }
-
-        $this->_error = $LetterModel->getLastError();
 
         $this->afterSend();
 
