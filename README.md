@@ -12,9 +12,10 @@ In `composer.json`:
 }
 ```
 
+
 configuration
 -------------
-`/protected/config/main.php`
+`/config/web.php`
 ```php
 <?
 return [
@@ -40,6 +41,28 @@ return [
 	],
 	// ...
 ];
+```
+Updating database schema
+-------------
+After you downloaded and configured Yii2-user, the last thing you need to do is updating your database schema by applying the migrations:
+
+In `/config/console.php`:
+```php
+<?
+return [
+	// ...
+	'components' => [
+		// ...
+		'postman' => [
+			'class' => 'rmrevin\yii\postman\Component',
+		],
+	],
+	// ...
+];
+```
+In `Command line`:
+```
+php yii migrate/up --migrationPath=@vendor/rmrevin/yii2-postman/migrations/
 ```
 
 Usage
