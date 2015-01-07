@@ -22,7 +22,7 @@ return [
 	'components' => [
 		// ...
 		'postman' => [
-			'class' => 'rmrevin\yii\postman\Postman',
+			'class' => 'rmrevin\yii\postman\Component',
 				'driver' => 'smtp',
 				'default_from' => ['mailer@somehost.com', 'Mailer'],
 				'table' => '{{%postman_letter}}',
