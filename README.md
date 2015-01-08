@@ -44,7 +44,7 @@ return [
 ```
 Updating database schema
 -------------
-After you downloaded and configured Yii2-user, the last thing you need to do is updating your database schema by applying the migrations:
+After you downloaded and configured yii2-postman, the last thing you need to do is updating your database schema by applying the migrations:
 
 In `/config/console.php`:
 ```php
