@@ -39,6 +39,9 @@ abstract class Letter extends \yii\base\Component
     /** @var string a last error of a message */
     private $_error = null;
 
+    /** @var Component */
+    private $Postman;
+
     /** the name of the event that occurs before sending emails */
     const EVENT_BEFORE_SEND = 'beforeSend';
 
@@ -58,8 +61,8 @@ abstract class Letter extends \yii\base\Component
             ]));
         }
 
-        $Postman = \rmrevin\yii\postman\Component::get();
-        $this->setFrom($Postman->default_from);
+        $this->Postman = \rmrevin\yii\postman\Component::get();
+        $this->setFrom($this->Postman->default_from);
     }
 
     /**
@@ -69,7 +72,7 @@ abstract class Letter extends \yii\base\Component
      */
     public function setSubject($subject)
     {
-        $this->subject = $subject;
+        $this->subject = (string)$this->Postman->subject_prefix . (string)$subject . (string)$this->Postman->subject_suffix;
 
         return $this;
     }

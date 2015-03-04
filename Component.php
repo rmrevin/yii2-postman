@@ -21,6 +21,12 @@ class Component extends \yii\base\Component
     /** @var array the default value for the "From" field */
     public $default_from = ['mailer@localhost', 'Mailer'];
 
+    /** @var string|null the string that is added to the beginning of the letter subject */
+    public $subject_prefix = null;
+
+    /** @var string|null the string that is added to the end of the letter subject */
+    public $subject_suffix = null;
+
     /** @var string a name of the db table for letters */
     public $table = '{{%postman_letter}}';
 

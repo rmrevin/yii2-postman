@@ -38,6 +38,9 @@ class PostmanTest extends postman\tests\unit\TestCase
 
     public function testDriverSendmail()
     {
+
+//        $this->markTestSkipped();
+
         $Postman = \rmrevin\yii\postman\Component::get();
         $Postman->driver = 'sendmail';
         $Postman->reconfigureDriver();
@@ -63,7 +66,7 @@ class PostmanTest extends postman\tests\unit\TestCase
     public function testDriverError()
     {
         $Postman = \rmrevin\yii\postman\Component::get();
-        $Postman->driver = 'unknow';
+        $Postman->driver = 'unknown';
         $Postman->reconfigureDriver();
     }
 }

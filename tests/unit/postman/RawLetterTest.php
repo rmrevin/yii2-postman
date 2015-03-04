@@ -15,9 +15,9 @@ use rmrevin\yii\postman;
 class RawLetterTest extends postman\tests\unit\TestCase
 {
 
-    public $run_sendmail_test = true;
-    public $run_mail_test = true;
-    public $run_qmail_test = true;
+    public $run_sendmail_test = false;
+    public $run_mail_test = false;
+    public $run_qmail_test = false;
 
     /**
      * @return \rmrevin\yii\postman\RawLetter

@@ -15,9 +15,9 @@ use rmrevin\yii\postman;
 class ViewLetterTest extends postman\tests\unit\TestCase
 {
 
-    public $run_sendmail_test = true;
-    public $run_mail_test = true;
-    public $run_qmail_test = true;
+    public $run_sendmail_test = false;
+    public $run_mail_test = false;
+    public $run_qmail_test = false;
 
     /**
      * @return \rmrevin\yii\postman\ViewLetter
@@ -26,7 +26,7 @@ class ViewLetterTest extends postman\tests\unit\TestCase
     {
         $Letter = (new postman\ViewLetter())
             ->setSubject('Subject')
-            ->setBodyView('test-template', [
+            ->setBodyFromView('test-template', [
                 'name' => 'Josh',
                 'age' => 23,
                 'sex' => 'male'
@@ -165,7 +165,7 @@ class ViewLetterTest extends postman\tests\unit\TestCase
     {
         (new postman\ViewLetter())
             ->setSubject('Subject')
-            ->setBodyView('non-exist-template', [
+            ->setBodyFromView('non-exist-template', [
                 'name' => 'Josh',
                 'age' => 23,
                 'sex' => 'male'
