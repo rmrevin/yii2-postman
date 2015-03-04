@@ -26,6 +26,8 @@ return [
 			'class' => 'rmrevin\yii\postman\Component',
 				'driver' => 'smtp',
 				'default_from' => ['mailer@somehost.com', 'Mailer'],
+				'subject_prefix' => 'Sitename / ',
+				'subject_suffix' => null,
 				'table' => '{{%postman_letter}}',
 				'view_path' => '/email',
 				'smtp_config' => [
@@ -84,7 +86,7 @@ if(!$Letter->send()){
 // path to view: /protected/views/email/message-view.php
 (new \rmrevin\yii\postman\ViewLetter)
     ->setSubject('Subject')
-    ->setBodyView('letter-view', [
+    ->setBodyFromView('letter-view', [
         'name' => 'Rosy',
         'date' => date('Y-m-d')
     ])
@@ -95,6 +97,8 @@ if(!$Letter->send()){
 }
 ```
 
+Cron
+----
 In cron script:
 ```php
 LetterModel::cron($num_letters_per_step = 10)
