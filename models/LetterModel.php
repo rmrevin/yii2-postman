@@ -15,6 +15,7 @@ use yii\helpers\Json;
  * @package rmrevin\yii\postman\models
  *
  * @property integer $id
+ * @property string $code
  * @property string $date_create
  * @property string $date_send
  * @property string $from
@@ -22,7 +23,6 @@ use yii\helpers\Json;
  * @property string $subject
  * @property string $body
  * @property string $attachments
- * @property boolean $is_html
  */
 class LetterModel extends \yii\db\ActiveRecord
 {
@@ -57,9 +57,9 @@ class LetterModel extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['subject', 'body', 'recipients'], 'required'],
-            [['date_create', 'date_send', 'subject', 'body', 'recipients', 'attachments'], 'filter', 'filter' => 'trim'],
-            [['subject', 'body', 'recipients', 'attachments'], 'string'],
+            [['code', 'subject', 'body', 'recipients'], 'required'],
+            [['code', 'date_create', 'date_send', 'subject', 'body', 'recipients', 'attachments'], 'filter', 'filter' => 'trim'],
+            [['code', 'subject', 'body', 'recipients', 'attachments'], 'string'],
         ];
     }
 
@@ -205,12 +205,13 @@ class LetterModel extends \yii\db\ActiveRecord
         $send = 0;
 
         $Postman = Component::get();
-        /** @var LetterModel[] $LetterModels */
-        $LetterModels = self::find()
-            ->where('[[date_send]] = :date OR [[date_send]] IS NULL', [':date' => '0000-00-00 00:00:00'])
+        /** @var static[] $LetterModels */
+        $LetterModels = static::find()
+            ->onlyNotSend()
             ->orderBy(['id' => SORT_ASC])
             ->limit($num_letters_per_step)
             ->all();
+
         foreach ($LetterModels as $LetterModel) {
             $LetterModel->setMailer($Postman->getCloneMailerObject());
             $LetterModel->sendImmediately();
@@ -223,6 +224,14 @@ class LetterModel extends \yii\db\ActiveRecord
         }
 
         return $send;
+    }
+
+    /**
+     * @return queries\LetterQuery
+     */
+    public static function find()
+    {
+        return new queries\LetterQuery(get_called_class());
     }
 
     /**

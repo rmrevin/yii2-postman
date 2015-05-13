@@ -7,7 +7,7 @@ In `composer.json`:
 ```
 {
     "require": {
-        "rmrevin/yii2-postman": "~2.1"
+        "rmrevin/yii2-postman": "~2.2"
     }
 }
 ```

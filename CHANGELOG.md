@@ -2,6 +2,7 @@
 ----------
 * In `ViewLetter` send attribute `_subject` to view.
 * In `LetterModel` is off the string length validation.
+* In `LetterModel` add new property `code`.
 
 2015-03-04
 ----------

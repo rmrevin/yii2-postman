@@ -250,6 +250,7 @@ abstract class Letter extends \yii\base\Component
         $this->beforeSend();
 
         $LetterModel = $this->_dataToModel();
+        $LetterModel->code = \Yii::$app->getSecurity()->generateRandomString();
         $LetterModel->date_create = new Expression('NOW()');
         if ($LetterModel->validate()) {
             $result = $LetterModel->save();
