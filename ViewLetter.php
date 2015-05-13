@@ -38,6 +38,8 @@ class ViewLetter extends Letter
         if (!file_exists($path)) {
             throw new LetterException(\Yii::t('app', 'View file «{path}» not found.', ['path' => $path]));
         } else {
+            $data['_subject'] = $this->subject;
+
             $this->body = \Yii::$app->getView()->renderFile($path, $data);
         }
 

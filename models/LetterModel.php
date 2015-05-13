@@ -59,7 +59,7 @@ class LetterModel extends \yii\db\ActiveRecord
         return [
             [['subject', 'body', 'recipients'], 'required'],
             [['date_create', 'date_send', 'subject', 'body', 'recipients', 'attachments'], 'filter', 'filter' => 'trim'],
-            [['subject', 'body', 'recipients', 'attachments'], 'string', 'max' => 5000],
+            [['subject', 'body', 'recipients', 'attachments'], 'string'],
         ];
     }
 
