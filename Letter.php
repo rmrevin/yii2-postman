@@ -24,6 +24,9 @@ abstract class Letter extends \yii\base\Component
     /** @var PHPMailer object */
     protected $_mailer = null;
 
+    /** @var string a random code */
+    protected $code;
+
     /** @var string a subject */
     protected $raw_subject;
 
@@ -66,6 +69,8 @@ abstract class Letter extends \yii\base\Component
 
         $this->Postman = \rmrevin\yii\postman\Component::get();
         $this->setFrom($this->Postman->default_from);
+
+        $this->code = \Yii::$app->getSecurity()->generateRandomString();
     }
 
     /**
@@ -250,7 +255,7 @@ abstract class Letter extends \yii\base\Component
         $this->beforeSend();
 
         $LetterModel = $this->_dataToModel();
-        $LetterModel->code = \Yii::$app->getSecurity()->generateRandomString();
+        $LetterModel->code = $this->code;
         $LetterModel->date_create = new Expression('NOW()');
         if ($LetterModel->validate()) {
             $result = $LetterModel->save();
