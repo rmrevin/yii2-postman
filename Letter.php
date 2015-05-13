@@ -25,6 +25,9 @@ abstract class Letter extends \yii\base\Component
     protected $_mailer = null;
 
     /** @var string a subject */
+    protected $raw_subject;
+
+    /** @var string a subject */
     protected $subject;
 
     /** @var string a body of a message */
@@ -72,6 +75,7 @@ abstract class Letter extends \yii\base\Component
      */
     public function setSubject($subject)
     {
+        $this->raw_subject = (string)$subject;
         $this->subject = (string)$this->Postman->subject_prefix . (string)$subject . (string)$this->Postman->subject_suffix;
 
         return $this;
