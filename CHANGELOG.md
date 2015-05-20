@@ -1,3 +1,7 @@
+2015-05-20
+----------
+* In method `ViewLetter::setViewFromBody` add parameter `viewPath`.
+
 2015-05-13
 ----------
 * In `ViewLetter` send attribute `_subject` to view.

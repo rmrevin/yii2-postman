@@ -14,27 +14,36 @@ class ViewLetter extends Letter
 {
 
     /**
-     * @param string $view
+     * @param string $view view file name or alias
      * @param array $data
+     * @param string $viewPath
      * @return static
      * @throws \rmrevin\yii\postman\LetterException
      */
-    public function setBodyFromView($view, $data = [])
+    public function setBodyFromView($view, $data = [], $viewPath = null)
     {
-        $source = null;
-        if (!empty(\Yii::$app->controller)) {
-            $controller = \Yii::$app->controller;
+        $controller = \Yii::$app->controller;
 
-            $source = isset($controller->module) && $controller->module !== null
+        if (!empty($controller)) {
+            $viewPath = isset($controller->module) && $controller->module !== null
                 ? $controller->module->getViewPath()
                 : $controller->getViewPath();
         }
 
-        if (empty($source)) {
-            $source = \Yii::$app->basePath . '/views';
+        if (empty($viewPath)) {
+            $viewPath = \Yii::$app->basePath . '/views';
         }
 
-        $path = $source . Component::get()->view_path . DIRECTORY_SEPARATOR . $view . '.php';
+        if (strncmp($view, '@', 1)) {
+            // example $view = '@app/view/email/letter-text.php'
+            $path = \Yii::getAlias($view);
+        } else {
+            // example $view = 'letter-text';
+            // expand to '/app/views/email/letter-text.php'
+            //        or '/app/modules/ModuleName/views/email/letter-text.php'
+            $path = $viewPath . Component::get()->view_path . DIRECTORY_SEPARATOR . $view . '.php';
+        }
+
         if (!file_exists($path)) {
             throw new LetterException(\Yii::t('app', 'View file «{path}» not found.', ['path' => $path]));
         } else {
