@@ -41,7 +41,7 @@ class ViewLetter extends Letter
             // example $view = 'letter-text';
             // expand to '/app/views/email/letter-text.php'
             //        or '/app/modules/ModuleName/views/email/letter-text.php'
-            $path = $viewPath . Component::get()->view_path . DIRECTORY_SEPARATOR . $view . '.php';
+            $path = \Yii::getAlias($viewPath) . Component::get()->view_path . DIRECTORY_SEPARATOR . $view . '.php';
         }
 
         if (!file_exists($path)) {
