@@ -1,3 +1,7 @@
+2015-05-21
+----------
+* Bugfix #7
+
 2015-05-20
 ----------
 * In method `ViewLetter::setViewFromBody` add parameter `viewPath`.

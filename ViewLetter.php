@@ -34,7 +34,7 @@ class ViewLetter extends Letter
             $viewPath = \Yii::$app->basePath . '/views';
         }
 
-        if (strncmp($view, '@', 1)) {
+        if (strncmp($view, '@', 1) === 0) {
             // example $view = '@app/view/email/letter-text.php'
             $path = \Yii::getAlias($view);
         } else {
