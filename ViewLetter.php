@@ -24,7 +24,7 @@ class ViewLetter extends Letter
     {
         $controller = \Yii::$app->controller;
 
-        if (!empty($controller)) {
+        if (!empty($controller) && empty($viewPath)) {
             $viewPath = isset($controller->module) && $controller->module !== null
                 ? $controller->module->getViewPath()
                 : $controller->getViewPath();

@@ -47,6 +47,7 @@ class LetterModel extends \yii\db\ActiveRecord
         parent::init();
 
         $this->on(self::EVENT_BEFORE_INSERT, function (\yii\base\ModelEvent $Event) {
+            $Event->sender->code = empty($Event->sender->code) ? \Yii::$app->getSecurity()->generateRandomString() : $Event->sender->code;
             $Event->sender->date_create = new \yii\db\Expression('NOW()');
         });
     }
@@ -88,24 +89,28 @@ class LetterModel extends \yii\db\ActiveRecord
 
             $mailer->SetFrom($recipients['from'][0], isset($recipients['from'][1]) ? $recipients['from'][1] : '');
             $mailer->Sender = $recipients['from'][0];
+
             if (isset($recipients['to'])) {
                 foreach ($recipients['to'] as $address) {
                     $address = is_string($address) ? [$address] : $address;
                     $mailer->AddAddress($address[0], isset($address[1]) ? $address[1] : '');
                 }
             }
+
             if (isset($recipients['cc'])) {
                 foreach ($recipients['cc'] as $address) {
                     $address = is_string($address) ? [$address] : $address;
                     $mailer->AddCC($address[0], isset($address[1]) ? $address[1] : '');
                 }
             }
+
             if (isset($recipients['bcc'])) {
                 foreach ($recipients['bcc'] as $address) {
                     $address = is_string($address) ? [$address] : $address;
                     $mailer->AddBCC($address[0], isset($address[1]) ? $address[1] : '');
                 }
             }
+
             if (isset($recipients['reply'])) {
                 foreach ($recipients['reply'] as $address) {
                     $address = is_string($address) ? [$address] : $address;
@@ -199,12 +204,14 @@ class LetterModel extends \yii\db\ActiveRecord
     /**
      * @param int $num_letters_per_step
      * @return int
+     * @throws \yii\base\Exception
      */
     public static function cron($num_letters_per_step = 10)
     {
         $send = 0;
 
         $Postman = Component::get();
+
         /** @var static[] $LetterModels */
         $LetterModels = static::find()
             ->onlyNotSend()
@@ -217,7 +224,7 @@ class LetterModel extends \yii\db\ActiveRecord
             $LetterModel->sendImmediately();
             $err = $LetterModel->getLastError();
             if (!empty($err)) {
-                echo $err . "\n";
+                throw new \yii\base\Exception($err);
             } else {
                 $send++;
             }

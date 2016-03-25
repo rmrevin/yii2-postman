@@ -18,6 +18,7 @@ class LetterModelTest extends postman\tests\unit\TestCase
     public function testMain()
     {
         $NewLetter = new postman\models\LetterModel([
+            'code' => uniqid(rand(), true),
             'subject' => uniqid(rand(), true),
             'body' => uniqid(rand(), true),
             'recipients' => uniqid(rand(), true),
@@ -27,7 +28,10 @@ class LetterModelTest extends postman\tests\unit\TestCase
         $this->assertNotEmpty($NewLetter->attributeLabels());
 
         if ($NewLetter->save() === false) {
-            $this->fail('Failed to save the model. Error: ' . $NewLetter->getFirstErrors()[0]);
+            $errors = $NewLetter->getFirstErrors();
+            $error = empty($errors) ? 'unknown' : array_shift($errors);
+
+            $this->fail('Failed to save the model. Error: ' . $error);
         } else {
             $Letter = postman\models\LetterModel::findOne($NewLetter->id);
 
@@ -102,6 +106,7 @@ class LetterModelTest extends postman\tests\unit\TestCase
         $this->assertEquals(5, $count);
 
         postman\models\LetterModel::cron(3);
+
         $this->expectOutputString('');
     }
 
@@ -110,11 +115,9 @@ class LetterModelTest extends postman\tests\unit\TestCase
         $Postman = \rmrevin\yii\postman\Component::get();
         $Mailer = $Postman->getMailerObject();
         $Mailer->IsSMTP();
-        $Mailer->Host = 'smtp.google.com';
-        $Mailer->Username = 'unknow';
 
         $Letter = (new postman\RawLetter())
-            ->setSubject('Test cron sending')
+            ->setSubject('Test error cron sending')
             ->setBody('body')
             ->setFrom(['test@domain.com', 'Test'])
             ->addAddress(
@@ -133,10 +136,12 @@ class LetterModelTest extends postman\tests\unit\TestCase
         $count = postman\models\LetterModel::find()
             ->where(['date_send' => null])
             ->count();
+
         $this->assertEquals(5, $count);
 
+        $this->expectException('yii\base\Exception');
+
         postman\models\LetterModel::cron(1);
-        $this->expectOutputString('The following From address failed: test@domain.com : Called Mail() without being connected' . "\n");
     }
 
     /**
