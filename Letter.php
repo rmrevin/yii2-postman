@@ -269,7 +269,8 @@ abstract class Letter extends \yii\base\Component
             $this->_error = $LetterModel->getLastError();
         } else {
             $result = false;
-            $this->_error = array_shift($LetterModel->getFirstErrors());
+            $firstErrors = $LetterModel->getFirstErrors();
+            $this->_error = array_shift($firstErrors);
         }
 
         $this->afterSend();
