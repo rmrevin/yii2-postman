@@ -27,7 +27,7 @@
   ],
   "require": {
     "yiisoft/yii2": "~2.0",
-    "phpmailer/phpmailer": "v5.2.14"
+    "phpmailer/phpmailer": "~v5.2"
   },
   "require-dev": {
     "phpunit/phpunit": "^5.2"
