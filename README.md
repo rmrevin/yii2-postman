@@ -58,7 +58,7 @@ If you want use SMTP without ssl and tsl
  			    'smtp_config' => [
  			        // ...
  			        'secure' => '',
-                    'smtpAutoTls' => false,
+ 			        'smtpAutoTls' => false,
  			    ]
  		],
  	],
