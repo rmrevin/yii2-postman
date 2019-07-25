@@ -94,6 +94,7 @@ class Component extends \yii\base\Component
                 $mailer->Password = $this->smtp_config['password'];
                 $mailer->SMTPSecure = $this->smtp_config['secure'];
                 $mailer->SMTPDebug = $this->smtp_config['debug'];
+                if (isset($this->smtp_config['smtpAutoTls'])) $mailer->SMTPAutoTLS = $this->smtp_config['smtpAutoTls'];
                 break;
             default:
                 throw new Exception(\Yii::t('app', 'Could not determine the driver is sending letters.'));

@@ -44,6 +44,28 @@ return [
 	// ...
 ];
 ```
+
+If you want use SMTP without ssl and tsl
+ ```php
+ <?
+ return [
+ 	// ...
+ 	'components' => [
+ 		// ...
+ 		'postman' => [
+ 			'class' => 'rmrevin\yii\postman\Component',
+ 			// ...
+ 			    'smtp_config' => [
+ 			        // ...
+ 			        'secure' => '',
+ 			        'smtpAutoTls' => false,
+ 			    ]
+ 		],
+ 	],
+// ...
+];
+```
+
 Updating database schema
 -------------
 After you downloaded and configured yii2-postman, the last thing you need to do is updating your database schema by applying the migrations:
